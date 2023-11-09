@@ -26,7 +26,7 @@ public class ItemService {
     private final UserDtoMapper userMapper;
 
     public ItemDto createItem(ItemDto itemDto, int userId) {
-        if (!userService.checkUser(userId)){
+        if (!userService.checkUser(userId)) {
             throw new UserNotFoundException("Пользователь с id = " + userId + " не найден");
         }
         Item item = itemMapper.toItem(itemDto);
@@ -36,7 +36,7 @@ public class ItemService {
     }
 
     public ItemDto updateItem(ItemDto itemDto, int userId, int itemId) {
-        if (!userService.checkUser(userId)){
+        if (!userService.checkUser(userId)) {
             throw new UserNotFoundException("Пользователь с id = " + userId + " не найден");
         }
         Item itemFromBd = itemStorage.getItemById(itemId);

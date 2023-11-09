@@ -9,10 +9,10 @@ import java.time.LocalDate;
  */
 @Data
 public class Booking {
-    private final int id;
-    private final LocalDate start;
-    private final LocalDate end;
-    private final int itemId;
-    private final  int renterId;
+    private int id;
+    private LocalDate start;
+    private LocalDate end;
+    private int itemId;
+    private int renterId;
 
 }
