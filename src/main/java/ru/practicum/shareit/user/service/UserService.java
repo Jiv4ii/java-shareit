@@ -18,13 +18,12 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class UserService {
     private final UserRepository repository;
-    private final UserDtoMapper userMapper;
 
     public UserDto createUser(UserDto userDto) {
         if (userDto.getName() == null || userDto.getEmail() == null) {
             throw new NoValidUserException("Поля name и email - обязательны");
         }
-        return userMapper.userToDto(repository.createUser(userMapper.dtoToUser(userDto)));
+        return UserDtoMapper.userToDto(repository.createUser(UserDtoMapper.dtoToUser(userDto)));
     }
 
     public UserDto updateUser(UserDto userDto, int userId) {
@@ -44,14 +43,14 @@ public class UserService {
             updatedUser.setName(userDto.getName());
         }
 
-        return userMapper.userToDto(repository.updateUser(updatedUser));
+        return UserDtoMapper.userToDto(repository.updateUser(updatedUser));
     }
 
     public UserDto getUserDtoById(int id) {
         if (!repository.checkUser(id)) {
             throw new UserNotFoundException("Пользователь с id = " + id + " не найден");
         }
-        return userMapper.userToDto(repository.getUserById(id));
+        return UserDtoMapper.userToDto(repository.getUserById(id));
     }
 
     public void deleteUser(int id) {
@@ -61,7 +60,7 @@ public class UserService {
     public List<UserDto> getAllUsers() {
         return repository.getAllUsers()
                 .stream()
-                .map(userMapper::userToDto)
+                .map(UserDtoMapper::userToDto)
                 .collect(Collectors.toList());
     }
 

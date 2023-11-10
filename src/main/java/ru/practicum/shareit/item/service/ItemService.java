@@ -22,17 +22,16 @@ import java.util.stream.Collectors;
 public class ItemService {
     private final ItemRepository itemStorage;
     private final UserService userService;
-    private final ItemDtoMapper itemMapper;
-    private final UserDtoMapper userMapper;
+
 
     public ItemDto createItem(ItemDto itemDto, int userId) {
         if (!userService.checkUser(userId)) {
             throw new UserNotFoundException("Пользователь с id = " + userId + " не найден");
         }
-        Item item = itemMapper.toItem(itemDto);
-        User owner = userMapper.dtoToUser(userService.getUserDtoById(userId));
+        Item item = ItemDtoMapper.toItem(itemDto);
+        User owner = UserDtoMapper.dtoToUser(userService.getUserDtoById(userId));
         item.setOwner(owner);
-        return itemMapper.toItemDto(itemStorage.createItem(item));
+        return ItemDtoMapper.toItemDto(itemStorage.createItem(item));
     }
 
     public ItemDto updateItem(ItemDto itemDto, int userId, int itemId) {
@@ -58,7 +57,7 @@ public class ItemService {
             itemFromBd.setAvailable(itemDto.getAvailable());
         }
 
-        return itemMapper.toItemDto(itemStorage.update(itemFromBd));
+        return ItemDtoMapper.toItemDto(itemStorage.update(itemFromBd));
     }
 
     public ItemDto getItemById(int id) {
@@ -67,7 +66,7 @@ public class ItemService {
             throw new ItemNotFoundException("Айтем с id = " + id + ", не найден");
         }
 
-        return itemMapper.toItemDto(itemStorage.getItemById(id));
+        return ItemDtoMapper.toItemDto(itemStorage.getItemById(id));
     }
 
     public List<ItemDto> findAllUsersItems(int userId) {
@@ -79,7 +78,7 @@ public class ItemService {
         return itemStorage.getAllItem()
                 .stream()
                 .filter(item -> item.getOwner().getId() == userId)
-                .map(itemMapper::toItemDto)
+                .map(ItemDtoMapper::toItemDto)
                 .collect(Collectors.toList());
     }
 
@@ -95,7 +94,7 @@ public class ItemService {
                 .filter(Item::getAvailable)
                 .filter(item -> item.getName().toLowerCase().contains(searchText)
                         || item.getDescription().toLowerCase().contains(searchText))
-                .map(itemMapper::toItemDto)
+                .map(ItemDtoMapper::toItemDto)
                 .collect(Collectors.toList());
     }
 }

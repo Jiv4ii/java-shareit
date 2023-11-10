@@ -15,16 +15,17 @@ import java.util.List;
 @Slf4j
 public class ItemController {
     private final ItemService itemService;
+    public static final String USER_HEADER = "X-Sharer-User-Id";
 
     @PostMapping
-    public ItemDto createItem(@RequestHeader("X-Sharer-User-Id") int  userId,
+    public ItemDto createItem(@RequestHeader(USER_HEADER) int userId,
                               @Valid @RequestBody ItemDto itemDto) {
         log.info("Запрос создания вещи юзера id = " + userId);
         return itemService.createItem(itemDto, userId);
     }
 
     @PatchMapping("/{itemId}")
-    public ItemDto updateItem(@RequestHeader("X-Sharer-User-Id") int userId,
+    public ItemDto updateItem(@RequestHeader(USER_HEADER) int userId,
                               @PathVariable int itemId,
                               @RequestBody ItemDto itemDto) {
         log.info("Обновление вещи пользователя id = " + userId);
@@ -38,7 +39,7 @@ public class ItemController {
     }
 
     @GetMapping
-    public List<ItemDto> getAllItemUser(@RequestHeader("X-Sharer-User-Id") int userId) {
+    public List<ItemDto> getAllItemUser(@RequestHeader(USER_HEADER) int userId) {
         log.info("Запрос всех вещей юзера id = " + userId);
         return itemService.findAllUsersItems(userId);
     }
