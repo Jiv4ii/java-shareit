@@ -31,7 +31,7 @@ public class BookingService {
         CheckBookingValid(bookingDto, userId);
 
         bookingDto.setBooker(userService.getUserById((userId)));
-        bookingDto.setItem(itemService.getItemById(bookingDto.getItemId(),userId));
+        bookingDto.setItem(itemService.getItemById(bookingDto.getItemId(), userId));
         bookingDto.setStatus(BookingStatus.WAITING);
 
         return BookingDtoMapper.toBookingDto(
@@ -47,7 +47,7 @@ public class BookingService {
         if (booking.getItem().getOwner().getId() != userId) {
             throw new NoAccessException("Информация о бронировании с id - " + booking.getItem().getId() + ", недоступна для пользователя id - " + userId);
         }
-        if (getBooking(userId,bookingId).getStatus() == BookingStatus.APPROVED){
+        if (getBooking(userId, bookingId).getStatus() == BookingStatus.APPROVED) {
             throw new ChangeAfterApproveException("У данного бронирования нельзя менять статус");
         }
 
@@ -73,7 +73,7 @@ public class BookingService {
     }
 
     public List<BookingDto> findAllBookingByUserId(int userId, String state) {
-        if (userService.checkUser(userId)){
+        if (userService.checkUser(userId)) {
             throw new UserNotFoundException("Пользователь с id - " + userId + " не найден");
         }
         List<Booking> bookings;
@@ -100,8 +100,8 @@ public class BookingService {
         return getCollect(bookings);
     }
 
-    public List<BookingDto> findAllBookingByOwnerId(int userId, String state){
-        if (userService.checkUser(userId)){
+    public List<BookingDto> findAllBookingByOwnerId(int userId, String state) {
+        if (userService.checkUser(userId)) {
             throw new UserNotFoundException("Пользователь с id - " + userId + " не найден");
         }
         List<Booking> bookings;
@@ -136,7 +136,7 @@ public class BookingService {
                 .collect(Collectors.toList());
     }
 
-    private BookingStatus transcriptStatus(String status){
+    private BookingStatus transcriptStatus(String status) {
         try {
             BookingStatus statusTranscipted = BookingStatus.valueOf(status);
             return statusTranscipted;
@@ -170,15 +170,14 @@ public class BookingService {
             throw new CheckBookerNotOwnerException("Нельзя взять свою вещь в аренду");
         }
 
-        }
-
-        private void checkBooking(int id){
-        if(repository.findById(id).isEmpty())
-            throw new BookingNotFoundException("Бронирование с id - " + id + ", не найдено");
-        }
-
-
-
     }
+
+    private void checkBooking(int id) {
+        if (repository.findById(id).isEmpty())
+            throw new BookingNotFoundException("Бронирование с id - " + id + ", не найдено");
+    }
+
+
+}
 
 
