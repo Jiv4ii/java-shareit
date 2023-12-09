@@ -10,11 +10,17 @@ public final class UserDtoMapper {
     }
 
     public static User dtoToUser(UserDto userDto) {
-        return new User().setId(userDto.getId()).setName(userDto.getName()).setEmail(userDto.getEmail());
+        return new User()
+                .setId(userDto.getId())
+                .setName(userDto.getName())
+                .setEmail(userDto.getEmail());
     }
 
     public static UserDto userToDto(User user) {
-        return new UserDto().setId(user.getId()).setName(user.getName()).setEmail(user.getEmail());
+        return new UserDto()
+                .setId(user.getId())
+                .setName(user.getName())
+                .setEmail(user.getEmail());
     }
 
 
