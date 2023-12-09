@@ -28,7 +28,7 @@ public class BookingService {
     @Transactional
     public BookingDto createBooking(BookingDto bookingDto, int userId) {
 
-        CheckBookingValid(bookingDto, userId);
+        checkBookingValid(bookingDto, userId);
 
         bookingDto.setBooker(userService.getUserById((userId)));
         bookingDto.setItem(itemService.getItemById(bookingDto.getItemId(), userId));
