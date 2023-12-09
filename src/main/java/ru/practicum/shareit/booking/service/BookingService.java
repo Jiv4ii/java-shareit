@@ -146,7 +146,7 @@ public class BookingService {
     }
 
 
-    private void CheckBookingValid(BookingDto bookingDto, int userId) {
+    private void checkBookingValid(BookingDto bookingDto, int userId) {
         if (userService.checkUser(userId)) {
             throw new UserNotFoundException("Пользователь с id = " + userId + " не найден");
         }
