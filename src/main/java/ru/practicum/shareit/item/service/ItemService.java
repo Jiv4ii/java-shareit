@@ -87,8 +87,14 @@ public class ItemService {
 
         if (repository.getReferenceById(itemId).getOwner().getId() == userId) {
 
-            BookingDto lastBooking = BookingDtoMapper.toBookingDto(getCurrentBookingForItem(itemId));
-            BookingDto nextBooking = BookingDtoMapper.toBookingDto(getNextBookingForItem(itemId));
+            BookingDto lastBooking = null;
+            BookingDto nextBooking = null;
+            if(getLastBookingForItem(itemId) != null){
+                lastBooking = BookingDtoMapper.toBookingDto(getLastBookingForItem(itemId));
+            }
+            if(getNextBookingForItem(itemId) != null){
+                nextBooking = BookingDtoMapper.toBookingDto(getNextBookingForItem(itemId));
+            }
 
             if (lastBooking == null && getCurrentBookingForItem(itemId) != null) {
                 lastBooking = BookingDtoMapper.toBookingDto(getCurrentBookingForItem(itemId));
@@ -109,8 +115,17 @@ public class ItemService {
         List<Item> items = repository.findByOwnerId(userId);
         List<OwnerItem> ownerItems = new ArrayList<>();
         for (Item item : items) {
-            BookingDto lastBooking = BookingDtoMapper.toBookingDto(getLastBookingForItem(item.getId()));
-            BookingDto nextBooking = BookingDtoMapper.toBookingDto(getNextBookingForItem(item.getId()));
+            BookingDto lastBooking = null;
+            BookingDto nextBooking = null;
+            if(getLastBookingForItem(item.getId()) != null){
+                lastBooking = BookingDtoMapper.toBookingDto(getLastBookingForItem(item.getId()));
+            }
+            if(getNextBookingForItem(item.getId()) != null){
+                nextBooking = BookingDtoMapper.toBookingDto(getNextBookingForItem(item.getId()));
+            }
+            if (lastBooking == null && getCurrentBookingForItem(item.getId()) != null) {
+                lastBooking = BookingDtoMapper.toBookingDto(getCurrentBookingForItem(item.getId()));
+            }
             List<CommentDto> comments = commentRepository.findByItemId(item.getId())
                     .stream()
                     .map(CommentDtoMapper::toCommentDto)

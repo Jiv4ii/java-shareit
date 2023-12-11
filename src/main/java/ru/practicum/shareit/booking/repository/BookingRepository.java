@@ -49,7 +49,7 @@ public interface BookingRepository extends JpaRepository<Booking, Integer> {
 
     @Query("select b from Booking b " +
             "where b.item.owner.id = ?1 " +
-            "and b.status in ?2" +
+            "and b.status in ?2 " +
             "and current_timestamp between b.start and b.end ")
     List<Booking> getBookingCurrentByOwnerId(
             int userId, List<BookingStatus> status);
