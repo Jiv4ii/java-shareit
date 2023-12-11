@@ -89,10 +89,10 @@ public class ItemService {
 
             BookingDto lastBooking = null;
             BookingDto nextBooking = null;
-            if(getLastBookingForItem(itemId) != null){
+            if (getLastBookingForItem(itemId) != null) {
                 lastBooking = BookingDtoMapper.toBookingDto(getLastBookingForItem(itemId));
             }
-            if(getNextBookingForItem(itemId) != null){
+            if (getNextBookingForItem(itemId) != null) {
                 nextBooking = BookingDtoMapper.toBookingDto(getNextBookingForItem(itemId));
             }
 
@@ -117,10 +117,10 @@ public class ItemService {
         for (Item item : items) {
             BookingDto lastBooking = null;
             BookingDto nextBooking = null;
-            if(getLastBookingForItem(item.getId()) != null){
+            if (getLastBookingForItem(item.getId()) != null) {
                 lastBooking = BookingDtoMapper.toBookingDto(getLastBookingForItem(item.getId()));
             }
-            if(getNextBookingForItem(item.getId()) != null){
+            if (getNextBookingForItem(item.getId()) != null) {
                 nextBooking = BookingDtoMapper.toBookingDto(getNextBookingForItem(item.getId()));
             }
             if (lastBooking == null && getCurrentBookingForItem(item.getId()) != null) {
