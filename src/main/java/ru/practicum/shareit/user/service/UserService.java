@@ -66,10 +66,12 @@ public class UserService {
                 .map(UserDtoMapper::userToDto)
                 .collect(Collectors.toList());
     }
+
     @Transactional
     public User getItemOwner(int itemId) {
         return repository.findOwnerByItemId(itemId).get(0);
     }
+
     @Transactional
     public boolean checkUser(int id) {
         return repository.findById(id).isEmpty();
