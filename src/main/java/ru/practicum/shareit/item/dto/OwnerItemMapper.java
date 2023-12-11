@@ -7,6 +7,8 @@ import ru.practicum.shareit.item.model.OwnerItem;
 import java.util.List;
 
 public final class OwnerItemMapper {
+    private OwnerItemMapper() {
+    }
 
     public static OwnerItem toOwnerItem(Item item, BookingDto lastBooking, BookingDto nextBooking, List<CommentDto> commentDtos) {
         return new OwnerItem()

@@ -46,6 +46,7 @@ public class UserService {
         return UserDtoMapper.userToDto(repository.save(updatedUser));
     }
 
+    @Transactional
     public UserDto getUserById(int id) {
         if (checkUser(id)) {
             throw new UserNotFoundException("Пользователь с id - " + id + " не найден");
@@ -53,21 +54,23 @@ public class UserService {
         return UserDtoMapper.userToDto(repository.getReferenceById(id));
     }
 
+    @Transactional
     public void deleteUser(int id) {
         repository.deleteById(id);
     }
 
+    @Transactional
     public List<UserDto> getAllUsers() {
         return repository.findAll()
                 .stream()
                 .map(UserDtoMapper::userToDto)
                 .collect(Collectors.toList());
     }
-
+    @Transactional
     public User getItemOwner(int itemId) {
         return repository.findOwnerByItemId(itemId).get(0);
     }
-
+    @Transactional
     public boolean checkUser(int id) {
         return repository.findById(id).isEmpty();
     }

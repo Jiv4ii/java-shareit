@@ -15,6 +15,7 @@ import ru.practicum.shareit.user.service.UserService;
 
 import javax.transaction.Transactional;
 import java.time.LocalDateTime;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -60,6 +61,7 @@ public class BookingService {
         return BookingDtoMapper.toBookingDto(repository.save(booking));
     }
 
+    @Transactional
     public BookingDto getBooking(int userId, int bookingId) {
         userService.checkUser(userId);
         checkBooking(bookingId);
@@ -72,6 +74,7 @@ public class BookingService {
         throw new NoAccessException("Информация о бронировании с id - " + booking.getItem().getId() + ", недоступна для пользователя id - " + userId);
     }
 
+    @Transactional
     public List<BookingDto> findAllBookingByUserId(int userId, String state) {
         if (userService.checkUser(userId)) {
             throw new UserNotFoundException("Пользователь с id - " + userId + " не найден");
@@ -91,7 +94,7 @@ public class BookingService {
                 break;
             case CURRENT:
                 bookings = repository.getBookingCurrentByUserId(userId,
-                        BookingStatus.APPROVED, BookingStatus.WAITING, BookingStatus.REJECTED);
+                        Arrays.asList(BookingStatus.APPROVED, BookingStatus.WAITING, BookingStatus.REJECTED));
                 break;
             default:
                 bookings = repository.findByBookerIdAndStatus(userId, status);
@@ -100,6 +103,7 @@ public class BookingService {
         return getCollect(bookings);
     }
 
+    @Transactional
     public List<BookingDto> findAllBookingByOwnerId(int userId, String state) {
         if (userService.checkUser(userId)) {
             throw new UserNotFoundException("Пользователь с id - " + userId + " не найден");
@@ -119,7 +123,7 @@ public class BookingService {
                 break;
             case CURRENT:
                 bookings = repository.getBookingCurrentByOwnerId(userId,
-                        BookingStatus.APPROVED, BookingStatus.WAITING, BookingStatus.REJECTED);
+                        Arrays.asList(BookingStatus.APPROVED, BookingStatus.WAITING, BookingStatus.REJECTED));
                 break;
             default:
                 bookings = repository.getBookingWithStatusByOwnerId(userId, status);

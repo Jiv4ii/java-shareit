@@ -1,14 +1,14 @@
 package ru.practicum.shareit.item.dto;
 
-import org.springframework.stereotype.Component;
 import ru.practicum.shareit.booking.dto.BookingDto;
 import ru.practicum.shareit.item.model.Item;
 
 import java.util.List;
 
-@Component
-public final class ItemDtoMapper {
 
+public final class ItemDtoMapper {
+    private ItemDtoMapper() {
+    }
 
     public static ItemDto toItemDto(Item item) {
         return new ItemDto().setId(item.getId()).setName(item.getName()).setDescription(item.getDescription()).setAvailable(item.getAvailable());

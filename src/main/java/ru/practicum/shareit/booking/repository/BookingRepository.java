@@ -8,7 +8,6 @@ import ru.practicum.shareit.booking.model.BookingStatus;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 
 @Repository
 public interface BookingRepository extends JpaRepository<Booking, Integer> {
@@ -23,10 +22,10 @@ public interface BookingRepository extends JpaRepository<Booking, Integer> {
 
     @Query("select b from Booking b " +
             "where b.booker.id = ?1 " +
-            "and (b.status = ?2 or b.status = ?3 or b.status = ?4)" +
-            "and (b.end > current_timestamp and b.start < current_timestamp)")
+            "and b.status in ?2 " +
+            "and current_timestamp between b.start and b.end ")
     List<Booking> getBookingCurrentByUserId(
-            int userId, BookingStatus waiting, BookingStatus rejected, BookingStatus current);
+            int userId, List<BookingStatus> status);
 
     @Query("select b from Booking b " +
             "where b.item.owner.id = ?1")
@@ -50,31 +49,31 @@ public interface BookingRepository extends JpaRepository<Booking, Integer> {
 
     @Query("select b from Booking b " +
             "where b.item.owner.id = ?1 " +
-            "and (b.status = ?2 or b.status = ?3 or b.status = ?4)" +
-            "and (b.end > current_timestamp and b.start < current_timestamp)")
+            "and b.status in ?2" +
+            "and current_timestamp between b.start and b.end ")
     List<Booking> getBookingCurrentByOwnerId(
-            int userId, BookingStatus waiting, BookingStatus rejected, BookingStatus current);
+            int userId, List<BookingStatus> status);
 
     @Query("select b from Booking b " +
             "where b.item.id = ?1 " +
             "and  b.end < current_timestamp " +
             "and b.status = ?2 " +
             "order by b.end desc ")
-    Optional<List<Booking>> getLastBookingForItem(int itemId, BookingStatus approved);
+    List<Booking> getLastBookingForItem(int itemId, BookingStatus approved);
 
     @Query("select b from Booking b " +
             "where b.item.id = ?1 " +
             "and b.status = ?2 " +
             "and  b.start > current_timestamp " +
             "order by b.end ASC ")
-    Optional<List<Booking>> getNextBookingForItem(int itemId, BookingStatus approved);
+    List<Booking> getNextBookingForItem(int itemId, BookingStatus approved);
 
     @Query("select b from Booking b " +
             "where b.item.id = ?1 " +
-            "and b.end > current_timestamp and b.start < current_timestamp " +
+            "and  current_timestamp between b.start and b.end " +
             "and b.status = ?2 " +
             "order by b.end asc ")
-    Optional<List<Booking>> getCurrentBookingForItem(int itemId, BookingStatus approved);
+    List<Booking> getCurrentBookingForItem(int itemId, BookingStatus approved);
 
 
     @Query("select b from Booking b " +
@@ -82,6 +81,6 @@ public interface BookingRepository extends JpaRepository<Booking, Integer> {
             "and b.item.id = ?1 " +
             "and b.booker.id = ?2 " +
             "and b.end < current_timestamp ")
-    Optional<List<Booking>> getBookingItemWhichTookUser(int itemId, int userId);
+    List<Booking> getBookingItemWhichTookUser(int itemId, int userId);
 
 }

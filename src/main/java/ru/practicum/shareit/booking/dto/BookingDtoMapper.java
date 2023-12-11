@@ -7,7 +7,8 @@ import ru.practicum.shareit.user.dto.UserDtoMapper;
 
 @Component
 public final class BookingDtoMapper {
-
+    private BookingDtoMapper() {
+    }
 
     public static BookingDto toBookingDto(Booking booking) {
         return new BookingDto()

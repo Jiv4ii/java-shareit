@@ -18,7 +18,7 @@ public class Comment {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    @Column(name = "text")
+    @Column(name = "comment_text")
     @NotBlank(message = "В запросе нет текста комментария.")
     private String text;
 
