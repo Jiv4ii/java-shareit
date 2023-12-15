@@ -31,7 +31,7 @@ public class UserController {
     @GetMapping("/{userId}")
     public UserDto getUserById(@PathVariable int userId) {
         log.info("Запрос пользователя id = " + userId);
-        return userService.getUserDtoById(userId);
+        return userService.getUserById(userId);
     }
 
     @DeleteMapping("/{userId}")

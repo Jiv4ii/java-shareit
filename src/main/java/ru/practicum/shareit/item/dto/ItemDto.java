@@ -2,15 +2,17 @@ package ru.practicum.shareit.item.dto;
 
 import lombok.Data;
 import lombok.experimental.Accessors;
+import ru.practicum.shareit.booking.dto.BookingDto;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import java.util.List;
 
 @Data
 @Accessors(chain = true)
 public class ItemDto {
 
-    private long id;
+    private int id;
 
     @NotBlank(message = "В запросе отсутствует имя вещи.")
     private String name;
@@ -20,5 +22,9 @@ public class ItemDto {
 
     @NotNull(message = "В запросе отсутствует статус запроса к аренде.")
     private Boolean available;
+
+    private BookingDto lastBooking;
+    private BookingDto nextBooking;
+    private List<CommentDto> comments;
 
 }
