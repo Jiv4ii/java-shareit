@@ -65,7 +65,7 @@ public class RequestServiceTest {
                 .addRequest(expectedItemRequestDto, userId);
 
         assertEquals("check", expectedItemRequestDto, actualItemRequestDto);
-        ;
+
     }
 
     @Test

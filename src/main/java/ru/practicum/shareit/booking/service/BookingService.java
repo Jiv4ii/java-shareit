@@ -10,7 +10,6 @@ import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.booking.model.BookingStatus;
 import ru.practicum.shareit.booking.repository.BookingRepository;
 import ru.practicum.shareit.exceptions.*;
-import ru.practicum.shareit.item.dto.ItemDtoMapper;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.service.ItemService;
 import ru.practicum.shareit.request.utils.Page;
@@ -80,7 +79,7 @@ public class BookingService {
     }
 
     @Transactional
-    public List<BookingDto> findAllBookingByUserId(int userId, String state , @Min(0) int from, @Min(1) int size) {
+    public List<BookingDto> findAllBookingByUserId(int userId, String state, @Min(0) int from, @Min(1) int size) {
         if (userService.checkUser(userId)) {
             throw new UserNotFoundException("Пользователь с id - " + userId + " не найден");
         }
@@ -110,7 +109,7 @@ public class BookingService {
     }
 
     @Transactional
-    public List<BookingDto> findAllBookingByOwnerId(int userId, String state , @Min(0) int from, @Min(1) int size ) {
+    public List<BookingDto> findAllBookingByOwnerId(int userId, String state, @Min(0) int from, @Min(1) int size) {
         if (userService.checkUser(userId)) {
             throw new UserNotFoundException("Пользователь с id - " + userId + " не найден");
         }

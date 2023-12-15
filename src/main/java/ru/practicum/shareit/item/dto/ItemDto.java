@@ -1,7 +1,6 @@
 package ru.practicum.shareit.item.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.Builder;
 import lombok.Data;
 import lombok.experimental.Accessors;
 import ru.practicum.shareit.booking.dto.BookingDto;

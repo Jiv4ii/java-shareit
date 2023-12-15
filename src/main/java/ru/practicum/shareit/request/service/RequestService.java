@@ -6,27 +6,20 @@ import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 import ru.practicum.shareit.exceptions.RequestNotFoundException;
 import ru.practicum.shareit.exceptions.UserNotFoundException;
-
 import ru.practicum.shareit.item.dto.ItemDtoMapper;
-
 import ru.practicum.shareit.item.repository.ItemRepository;
-
 import ru.practicum.shareit.request.dto.RequestDto;
 import ru.practicum.shareit.request.dto.RequestDtoMapper;
-
-
 import ru.practicum.shareit.request.model.Request;
-
 import ru.practicum.shareit.request.repository.RequestRepository;
+import ru.practicum.shareit.request.utils.Page;
 import ru.practicum.shareit.user.dto.UserDtoMapper;
 import ru.practicum.shareit.user.service.UserService;
-import ru.practicum.shareit.request.utils.Page;
 
 import javax.transaction.Transactional;
 import javax.validation.constraints.Min;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -97,9 +90,9 @@ public class RequestService {
         return itemRequestDto;
     }
 
-    public void checkExistsRequest(int RequestId) {
-        if (itemRequestStorage.findById(RequestId).isEmpty()) {
-            throw new RequestNotFoundException("Запроса с id " + RequestId + " не существует");
+    public void checkExistsRequest(int requestId) {
+        if (itemRequestStorage.findById(requestId).isEmpty()) {
+            throw new RequestNotFoundException("Запроса с id " + requestId + " не существует");
         }
     }
 
