@@ -54,7 +54,7 @@ public class ItemControllerTest {
     }
 
     @Test
-    public void createItem_whenValidNameTest() throws Exception {
+    public void createItemWhenValidNameTest() throws Exception {
         when(itemService.createItem(any(), anyInt())).thenReturn(item);
 
         mvc.perform(post("/items")
@@ -68,7 +68,7 @@ public class ItemControllerTest {
     }
 
     @Test
-    public void createItem_whenNotValidNameTest() throws Exception {
+    public void createItemWhenNotValidNameTest() throws Exception {
         item.setName(" ");
 
         mvc.perform(post("/items")
@@ -138,7 +138,7 @@ public class ItemControllerTest {
     }
 
     @Test
-    public void addComment_whenValidTextTest() throws Exception {
+    public void addCommentWhenValidTextTest() throws Exception {
         CommentDto comment = new CommentDto().setId(1)
                 .setText("Рекомендую");
         when(itemService.addComment(any(), anyInt(), anyInt()))
@@ -155,7 +155,7 @@ public class ItemControllerTest {
     }
 
     @Test
-    public void addComment_whenNotValidTextTest() throws Exception {
+    public void addCommentWhenNotValidTextTest() throws Exception {
         CommentDto comment = new CommentDto().setId(1)
                 .setText(" ");
 

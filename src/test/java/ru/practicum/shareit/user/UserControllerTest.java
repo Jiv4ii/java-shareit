@@ -65,7 +65,7 @@ public class UserControllerTest {
     }
 
     @Test
-    public void createUser_whenNameIsBlankTest() throws Exception {
+    public void createUserWhenNameIsBlankTest() throws Exception {
         userDto.setName(" ");
 
         mvc.perform(post("/users")

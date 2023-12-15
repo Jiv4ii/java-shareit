@@ -4,6 +4,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.PageRequest;
 import ru.practicum.shareit.booking.dto.BookingDto;
@@ -21,14 +22,17 @@ import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.service.UserService;
 
 import java.time.LocalDateTime;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.util.AssertionErrors.assertEquals;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 public class BookingServiceTest {
@@ -72,6 +76,25 @@ public class BookingServiceTest {
                 () -> bookingService.createBooking(bookingDto, userId));
     }
 
+    @Test
+    public void createBooking_whenUserOwnerItemTest() {
+        int userId = 1;
+        BookingDto bookingDto = new BookingDto()
+                .setItemId(1)
+                .setStart(LocalDateTime.of(2023, 12, 2, 12, 0))
+                .setEnd(LocalDateTime.of(2023, 12, 3, 12, 0));
+
+        Item item = new Item()
+                .setOwner(new User()
+                        .setId(1));
+
+        when(itemService.checkItemAvailable(any(Item.class))).thenReturn(true);
+        when(itemService.getItem(bookingDto.getItemId())).thenReturn(item);
+
+        assertThrows(CheckBookerNotOwnerException.class,
+                () -> bookingService.createBooking(bookingDto, userId));
+    }
+
 
     @Test
     public void createBookingTest() {
@@ -100,6 +123,26 @@ public class BookingServiceTest {
         BookingDto actualBookingDto = bookingService.createBooking(expectedBookingDto, userId);
 
         assertEquals("check", expectedBookingDto, actualBookingDto);
+    }
+
+    @Test
+    public void addStatusBookingWhenNotFoundBookingTest() {
+        int userId = 1;
+        int bookingId = 1;
+        boolean isApproved = false;
+
+        User user = new User()
+                .setId(2);
+
+        Item item = new Item()
+                .setOwner(user);
+
+        Booking booking = new Booking().setItem(item);
+
+        when(bookingStorage.findById(bookingId)).thenReturn(Optional.empty());
+
+        assertThrows(BookingNotFoundException.class,
+                () -> bookingService.addStatusBooking(userId, bookingId, isApproved));
     }
 
 
@@ -147,6 +190,36 @@ public class BookingServiceTest {
 
         assertThrows(ChangeAfterApproveException.class,
                 () -> bookingService.addStatusBooking(userId, bookingId, isApproved));
+    }
+
+    @Test
+    public void addStatusBooking_whenBookingStatusIsApproved() {
+        int userId = 1;
+        int bookingId = 1;
+        boolean isApproved = true;
+
+        User user = new User()
+                .setId(userId);
+
+        Item item = new Item()
+                .setOwner(user);
+
+        Booking booking = new Booking()
+                .setBooker(new User().setId(1))
+                .setItem(item)
+                .setStatus(BookingStatus.WAITING);
+
+        Booking expectedBooking = new Booking()
+                .setBooker(new User().setId(1))
+                .setItem(item)
+                .setStatus(BookingStatus.APPROVED);
+
+        when(bookingStorage.findById(bookingId)).thenReturn(Optional.of(booking));
+        when(bookingStorage.getReferenceById(anyInt())).thenReturn(booking);
+        when(bookingStorage.save(expectedBooking)).thenReturn(expectedBooking);
+
+        BookingDto actualBooking = bookingService.addStatusBooking(userId, bookingId, isApproved);
+        assertEquals("check", BookingDtoMapper.toBookingDto(expectedBooking), actualBooking);
     }
 
 
@@ -221,6 +294,110 @@ public class BookingServiceTest {
         assertEquals("check", 0, actualBookings.size());
     }
 
+    @Test
+    public void findAllBookingByUserId_whenStatusPastTest() {
+        int userId = 1;
+        int from = 1;
+        int size = 1;
+        int page = from / size;
+        String state = "PAST";
+
+        when(bookingStorage.findByBookerIdAndEndBeforeOrderByStartDesc(anyInt(),
+                any(LocalDateTime.class), any(PageRequest.class))).thenReturn(Collections.emptyList());
+
+        List<BookingDto> actualBookings = bookingService.findAllBookingByUserId(userId, state, from, size);
+
+        assertEquals("check", 0, actualBookings.size());
+        verify(bookingStorage, never())
+                .findByBookerIdOrderByStartDesc(userId, PageRequest.of(page, size));
+        verify(bookingStorage, never())
+                .findAllByBookerIdAndStartAfterOrderByStartDesc(userId,
+                        LocalDateTime.now(), PageRequest.of(page, size));
+        verify(bookingStorage, never()).getBookingCurrentByUserId(userId,
+                Arrays.asList(BookingStatus.APPROVED, BookingStatus.WAITING, BookingStatus.REJECTED), PageRequest.of(page, size));
+        verify(bookingStorage, never()).findByBookerIdAndStatusOrderByStartDesc(userId,
+                BookingStatus.WAITING, PageRequest.of(page, size));
+    }
+
+    @Test
+    public void findAllBookingByUserId_whenStatusCurrentTest() {
+        int userId = 1;
+        int from = 1;
+        int size = 1;
+        int page = from / size;
+        String state = "CURRENT";
+
+        when(bookingStorage.getBookingCurrentByUserId(userId, Arrays.asList(
+                BookingStatus.APPROVED,
+                BookingStatus.WAITING,
+                BookingStatus.REJECTED), PageRequest.of(page, size)))
+                .thenReturn(Collections.emptyList());
+
+        List<BookingDto> actualBookings = bookingService.findAllBookingByUserId(userId, state, from, size);
+
+        assertEquals("check", 0, actualBookings.size());
+        verify(bookingStorage, never())
+                .findByBookerIdOrderByStartDesc(userId, PageRequest.of(page, size));
+        verify(bookingStorage, never())
+                .findAllByBookerIdAndStartAfterOrderByStartDesc(userId,
+                        LocalDateTime.now(), PageRequest.of(page, size));
+        verify(bookingStorage, never()).findByBookerIdAndStatusOrderByStartDesc(userId,
+                BookingStatus.WAITING, PageRequest.of(page, size));
+    }
+
+    @Test
+    public void findAllBookingByUserId_whenStatusFutureTest() {
+        int userId = 1;
+        int from = 1;
+        int size = 1;
+        int page = from / size;
+        String state = "FUTURE";
+
+        when(bookingStorage.findAllByBookerIdAndStartAfterOrderByStartDesc(anyInt(),
+                any(LocalDateTime.class), any(PageRequest.class)))
+                .thenReturn(Collections.emptyList());
+
+        List<BookingDto> actualBookings = bookingService.findAllBookingByUserId(userId, state, from, size);
+
+        assertEquals("check", 0, actualBookings.size());
+        verify(bookingStorage, never())
+                .findByBookerIdOrderByStartDesc(userId, PageRequest.of(page, size));
+        verify(bookingStorage, never())
+                .findByBookerIdAndEndBeforeOrderByStartDesc(userId,
+                        LocalDateTime.now(), PageRequest.of(page, size));
+        verify(bookingStorage, never()).getBookingCurrentByUserId(userId, Arrays.asList(
+                BookingStatus.APPROVED, BookingStatus.WAITING, BookingStatus.REJECTED), PageRequest.of(page, size));
+        verify(bookingStorage, never()).findByBookerIdAndStatusOrderByStartDesc(userId,
+                BookingStatus.WAITING, PageRequest.of(page, size));
+    }
+
+    @Test
+    public void findAllBookingByUserId_whenStatusDefaultTest() {
+        int userId = 1;
+        int from = 1;
+        int size = 1;
+        int page = from / size;
+        String state = "WAITING";
+
+        when(bookingStorage.findByBookerIdAndStatusOrderByStartDesc(anyInt(),
+                any(BookingStatus.class), any(PageRequest.class)))
+                .thenReturn(Collections.emptyList());
+
+        List<BookingDto> actualBookings = bookingService.findAllBookingByUserId(userId, state, from, size);
+
+        assertEquals("check", 0, actualBookings.size());
+        verify(bookingStorage, never())
+                .findByBookerIdOrderByStartDesc(userId, PageRequest.of(page, size));
+        verify(bookingStorage, never())
+                .findByBookerIdAndEndBeforeOrderByStartDesc(userId,
+                        LocalDateTime.now(), PageRequest.of(page, size));
+        verify(bookingStorage, never()).getBookingCurrentByUserId(userId, Arrays.asList(
+                BookingStatus.APPROVED, BookingStatus.WAITING, BookingStatus.REJECTED), PageRequest.of(page, size));
+        verify(bookingStorage, never())
+                .findAllByBookerIdAndStartAfterOrderByStartDesc(userId,
+                        LocalDateTime.now(), PageRequest.of(page, size));
+    }
+
 
     @Test
     public void findAllBookingByOwnerId_whenStatusAllTest() {
@@ -238,5 +415,108 @@ public class BookingServiceTest {
         assertEquals("check", 0, bookings.size());
 
     }
+
+    @Test
+    public void findAllBookingByOwnerId_whenStatusPastTest() {
+        int userId = 1;
+        int from = 1;
+        int size = 1;
+        int page = from / size;
+        String state = "PAST";
+
+        when(bookingStorage.getPastBookingByOwnerId(userId, PageRequest.of(page, size)))
+                .thenReturn(Collections.emptyList());
+
+        List<BookingDto> bookings = bookingService.findAllBookingByOwnerId(userId, state, from, size);
+
+        assertEquals("check", 0, bookings.size());
+
+        Mockito.verify(bookingStorage, never()).getAllBookingByOwnerId(userId, PageRequest.of(page, size));
+        verify(bookingStorage, never()).getFutureBookingByOwnerId(userId, PageRequest.of(page, size));
+        verify(bookingStorage, never()).getBookingCurrentByOwnerId(userId, Arrays.asList(
+                        BookingStatus.APPROVED,
+                        BookingStatus.WAITING,
+                        BookingStatus.REJECTED),
+                PageRequest.of(page, size));
+        verify(bookingStorage, never()).getBookingWithStatusByOwnerId(anyInt(),
+                any(BookingStatus.class), any(PageRequest.class));
+    }
+
+    @Test
+    public void findAllBookingByOwnerId_whenStatusFutureTest() {
+        int userId = 1;
+        int from = 1;
+        int size = 1;
+        int page = from / size;
+        String state = "FUTURE";
+
+        when(bookingStorage.getFutureBookingByOwnerId(userId, PageRequest.of(page, size)))
+                .thenReturn(Collections.emptyList());
+
+        List<BookingDto> bookings = bookingService.findAllBookingByOwnerId(userId, state, from, size);
+
+        assertEquals("check", 0, bookings.size());
+
+        verify(bookingStorage, never()).getAllBookingByOwnerId(userId, PageRequest.of(page, size));
+        verify(bookingStorage, never()).getPastBookingByOwnerId(userId, PageRequest.of(page, size));
+        verify(bookingStorage, never()).getBookingCurrentByOwnerId(userId, Arrays.asList(
+                        BookingStatus.APPROVED,
+                        BookingStatus.WAITING,
+                        BookingStatus.REJECTED),
+                PageRequest.of(page, size));
+        verify(bookingStorage, never()).getBookingWithStatusByOwnerId(anyInt(),
+                any(BookingStatus.class), any(PageRequest.class));
+    }
+
+    @Test
+    public void findAllBookingByOwnerId_whenStatusCurrentTest() {
+        int userId = 1;
+        int from = 1;
+        int size = 1;
+        int page = from / size;
+        String state = "CURRENT";
+
+        when(bookingStorage.getBookingCurrentByOwnerId(userId, Arrays.asList(
+                        BookingStatus.APPROVED,
+                        BookingStatus.WAITING,
+                        BookingStatus.REJECTED),
+                PageRequest.of(page, size))).thenReturn(Collections.emptyList());
+
+        List<BookingDto> bookings = bookingService.findAllBookingByOwnerId(userId, state, from, size);
+
+        assertEquals("check", 0, bookings.size());
+
+        verify(bookingStorage, never()).getAllBookingByOwnerId(userId, PageRequest.of(page, size));
+        verify(bookingStorage, never()).getPastBookingByOwnerId(userId, PageRequest.of(page, size));
+        verify(bookingStorage, never()).getFutureBookingByOwnerId(userId, PageRequest.of(page, size));
+        verify(bookingStorage, never()).getBookingWithStatusByOwnerId(anyInt(),
+                any(BookingStatus.class), any(PageRequest.class));
+    }
+
+    @Test
+    public void findAllBookingByOwnerId_whenStatusDefautTest() {
+        int userId = 1;
+        int from = 1;
+        int size = 1;
+        int page = from / size;
+        String state = "WAITING";
+
+        when(bookingStorage.getBookingWithStatusByOwnerId(anyInt(),
+                any(BookingStatus.class), any(PageRequest.class))).thenReturn(Collections.emptyList());
+
+        List<BookingDto> bookings = bookingService.findAllBookingByOwnerId(userId, state, from, size);
+
+        assertEquals("check", 0, bookings.size());
+
+        verify(bookingStorage, never()).getAllBookingByOwnerId(userId, PageRequest.of(page, size));
+        verify(bookingStorage, never()).getPastBookingByOwnerId(userId, PageRequest.of(page, size));
+        verify(bookingStorage, never()).getFutureBookingByOwnerId(userId, PageRequest.of(page, size));
+        verify(bookingStorage, never()).getBookingCurrentByOwnerId(userId, Arrays.asList(
+                        BookingStatus.APPROVED,
+                        BookingStatus.WAITING,
+                        BookingStatus.REJECTED),
+                PageRequest.of(page, size));
+    }
+
 
 }

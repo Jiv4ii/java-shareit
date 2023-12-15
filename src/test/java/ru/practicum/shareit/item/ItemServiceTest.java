@@ -1,5 +1,6 @@
 package ru.practicum.shareit.item;
 
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -21,19 +22,19 @@ import ru.practicum.shareit.item.repository.CommentRepository;
 import ru.practicum.shareit.item.repository.ItemRepository;
 import ru.practicum.shareit.item.service.ItemService;
 import ru.practicum.shareit.request.model.Request;
-import ru.practicum.shareit.request.repository.RequestRepository;
 import ru.practicum.shareit.request.service.RequestService;
 import ru.practicum.shareit.user.dto.UserDto;
 import ru.practicum.shareit.user.model.User;
-import ru.practicum.shareit.user.repository.UserRepository;
 import ru.practicum.shareit.user.service.UserService;
 
 import java.time.LocalDateTime;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.util.AssertionErrors.assertEquals;
@@ -48,8 +49,6 @@ public class ItemServiceTest {
     @Mock
     private UserService userService;
 
-    @Mock
-    private RequestRepository itemRequestStorage;
 
     @Mock
     private ItemRepository itemStorage;
@@ -63,11 +62,9 @@ public class ItemServiceTest {
     @Mock
     private BookingRepository bookingStorage;
 
-    @Mock
-    private UserRepository userStorage;
 
     @Test
-    public void createItem_withoutItemRequest_test() {
+    public void createItemWithoutItemRequestTest() {
         int userId = 1;
         Item item = new Item()
                 .setId(1);
@@ -83,7 +80,29 @@ public class ItemServiceTest {
     }
 
     @Test
-    public void createItem_withItemRequest_test() {
+    public void searchItemWhenNormalTest() {
+        User user = new User().setId(1);
+        Item item = new Item()
+                .setId(1)
+                .setName("lopata")
+                .setDescription("sher")
+                .setAvailable(true)
+                .setOwner(user);
+
+        ItemDto itemD = new ItemDto()
+                .setId(1)
+                .setName("lopata")
+                .setDescription("sher")
+                .setAvailable(true);
+
+
+        when(itemStorage.findAll()).thenReturn(Arrays.asList(item));
+        Assertions.assertEquals(itemD, itemService.searchItem("sher").get(0));;
+
+    }
+
+    @Test
+    public void createItemWithItemRequestTest() {
         int userId = 1;
         Item item = new Item()
                 .setId(1)
@@ -104,7 +123,7 @@ public class ItemServiceTest {
     }
 
     @Test
-    public void updateItem_whenUserOwner_test() {
+    public void updateItemWhenUserOwnerTest() {
         int userId = 1;
         int itemId = 1;
         Item item = new Item()
@@ -126,7 +145,7 @@ public class ItemServiceTest {
     }
 
     @Test
-    public void updateItem_whenUserNotOwner_test() {
+    public void updateItemWhenUserNotOwnerTest() {
         int userId = 2;
         int itemId = 1;
         Item item = new Item()
@@ -145,7 +164,7 @@ public class ItemServiceTest {
     }
 
     @Test
-    public void getItemId_whenFoundItemTest() {
+    public void getItemIdWhenFoundItemTest() {
         int itemId = 1;
         Item item = new Item()
                 .setId(itemId)
@@ -162,7 +181,7 @@ public class ItemServiceTest {
 
 
     @Test
-    public void getItemById_whenUserOwnerTest() {
+    public void getItemByIdWhenUserOwnerTest() {
         int itemId = 1;
         int userId = 1;
 
@@ -200,7 +219,7 @@ public class ItemServiceTest {
     }
 
     @Test
-    public void searchItem_whenTextIsBlankTest() {
+    public void searchItemWhenTextIsBlankTest() {
         String text = " ";
 
 
@@ -236,7 +255,7 @@ public class ItemServiceTest {
     }
 
     @Test
-    public void addComment_whenNotFoundBookingTest() {
+    public void addCommentWhenNotFoundBookingTest() {
         int itemId = 1;
         int userId = 1;
 

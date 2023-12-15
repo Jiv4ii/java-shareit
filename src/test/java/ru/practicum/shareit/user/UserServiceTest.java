@@ -6,6 +6,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import ru.practicum.shareit.exceptions.NotValidIntervalException;
 import ru.practicum.shareit.exceptions.UserNotFoundException;
 import ru.practicum.shareit.user.dto.UserDto;
 import ru.practicum.shareit.user.dto.UserDtoMapper;
@@ -40,6 +41,7 @@ public class UserServiceTest {
 
         assertEquals("check", user.getName(), saveUser.getName());
     }
+
 
     @Test
     public void getUserByIdTest() {

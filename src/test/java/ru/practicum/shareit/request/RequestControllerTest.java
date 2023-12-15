@@ -54,7 +54,7 @@ public class RequestControllerTest {
     }
 
     @Test
-    public void createRequest_whenValidDescriptionTest() throws Exception {
+    public void createRequestWhenValidDescriptionTest() throws Exception {
         when(itemRequestService.addRequest(any(), anyInt())).thenReturn(itemRequestDto);
 
         mvc.perform(post("/requests")
@@ -68,7 +68,7 @@ public class RequestControllerTest {
     }
 
     @Test
-    public void createRequest_whenNotValidDescriptionTest() throws Exception {
+    public void createRequestWhenNotValidDescriptionTest() throws Exception {
         itemRequestDto.setDescription(" ");
 
         mvc.perform(post("/requests")

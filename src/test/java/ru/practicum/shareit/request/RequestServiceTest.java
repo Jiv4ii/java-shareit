@@ -94,7 +94,7 @@ public class RequestServiceTest {
     }
 
     @Test
-    public void getItemRequest_whenFoundItemRequest_test() {
+    public void getItemRequestTest() {
         int requestId = 1;
         int userId = 1;
 
@@ -108,7 +108,7 @@ public class RequestServiceTest {
     }
 
     @Test
-    public void getItemRequest_whenNotFoundItemRequest_test() {
+    public void getItemRequestWhenNotFoundItemRequestTest() {
         int requestId = 1;
         int userId = 1;
 
