@@ -32,8 +32,6 @@ public class GlobalExceptionHandlerTest {
     @Mock
     private NoAccessException noAccessException;
 
-    @Mock
-    private NoAccessBookingException noAccessBookingException;
 
     @Mock
     private ItemNotAvailableException itemNotAvailableException;
@@ -106,14 +104,6 @@ public class GlobalExceptionHandlerTest {
         assertEquals("No access", response.get("error"));
     }
 
-    @Test
-    void testHandleNoAccessBookingException() {
-        when(noAccessBookingException.getMessage()).thenReturn("No access booking");
-
-        Map<String, String> response = globalExceptionHandler.handleNoCount(noAccessBookingException);
-
-        assertEquals("No access booking", response.get("error"));
-    }
 
     @Test
     void testHandleItemNotAvailableException() {
@@ -157,7 +147,9 @@ public class GlobalExceptionHandlerTest {
 
         Map<String, String> response = globalExceptionHandler.handleNoCount(changeAfterApproveException);
 
-        assertEquals("Change after approve", response.get("error"));;;
+        assertEquals("Change after approve", response.get("error"));
+        ;
+        ;
     }
 
     @Test
