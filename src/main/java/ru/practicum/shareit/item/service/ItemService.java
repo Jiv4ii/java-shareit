@@ -1,7 +1,9 @@
 package ru.practicum.shareit.item.service;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
+import org.springframework.validation.annotation.Validated;
 import ru.practicum.shareit.booking.dto.BookingDto;
 import ru.practicum.shareit.booking.dto.BookingDtoMapper;
 import ru.practicum.shareit.booking.model.Booking;
@@ -17,11 +19,16 @@ import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.model.OwnerItem;
 import ru.practicum.shareit.item.repository.CommentRepository;
 import ru.practicum.shareit.item.repository.ItemRepository;
+import ru.practicum.shareit.request.dto.RequestDto;
+import ru.practicum.shareit.request.dto.RequestDtoMapper;
+import ru.practicum.shareit.request.service.RequestService;
+import ru.practicum.shareit.request.utils.Page;
 import ru.practicum.shareit.user.dto.UserDtoMapper;
 import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.service.UserService;
 
 import javax.transaction.Transactional;
+import javax.validation.constraints.Min;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -29,11 +36,13 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
+@Validated
 public class ItemService {
     private final ItemRepository repository;
     private final UserService userService;
     private final BookingRepository bookingRepository;
     private final CommentRepository commentRepository;
+    private final RequestService requestService;
 
     @Transactional
     public ItemDto createItem(ItemDto itemDto, int userId) {
@@ -43,6 +52,10 @@ public class ItemService {
         Item item = ItemDtoMapper.toItem(itemDto);
         User owner = UserDtoMapper.dtoToUser(userService.getUserById(userId));
         item.setOwner(owner);
+        if (itemDto.getRequestId() != null) {
+            requestService.checkExistsRequest(itemDto.getRequestId());
+            item.setRequest(requestService.getRequest(itemDto.getRequestId()));
+        }
         return ItemDtoMapper.toItemDto(repository.save(item));
     }
 
@@ -106,14 +119,15 @@ public class ItemService {
     }
 
     @Transactional
-    public List<OwnerItem> findAllUsersItems(int userId) {
+    public List<OwnerItem> findAllUsersItems(int userId, @Min(0) int from, @Min(1) int size) {
 
         if (userService.checkUser(userId)) {
             throw new UserNotFoundException("Пользователь с id - " + userId + " не найден");
         }
-
-        List<Item> items = repository.findByOwnerId(userId);
+        PageRequest pageRequest = Page.createPageRequest(from, size);
+        List<Item> items = repository.findByOwnerId(userId, pageRequest);
         List<OwnerItem> ownerItems = new ArrayList<>();
+
         for (Item item : items) {
             BookingDto lastBooking = null;
             BookingDto nextBooking = null;

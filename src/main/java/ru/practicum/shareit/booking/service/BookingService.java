@@ -1,7 +1,9 @@
 package ru.practicum.shareit.booking.service;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
+import org.springframework.validation.annotation.Validated;
 import ru.practicum.shareit.booking.dto.BookingDto;
 import ru.practicum.shareit.booking.dto.BookingDtoMapper;
 import ru.practicum.shareit.booking.model.Booking;
@@ -11,9 +13,11 @@ import ru.practicum.shareit.exceptions.*;
 import ru.practicum.shareit.item.dto.ItemDtoMapper;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.service.ItemService;
+import ru.practicum.shareit.request.utils.Page;
 import ru.practicum.shareit.user.service.UserService;
 
 import javax.transaction.Transactional;
+import javax.validation.constraints.Min;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
@@ -21,6 +25,7 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
+@Validated
 public class BookingService {
     private final BookingRepository repository;
     private final ItemService itemService;
@@ -75,58 +80,60 @@ public class BookingService {
     }
 
     @Transactional
-    public List<BookingDto> findAllBookingByUserId(int userId, String state) {
+    public List<BookingDto> findAllBookingByUserId(int userId, String state , @Min(0) int from, @Min(1) int size) {
         if (userService.checkUser(userId)) {
             throw new UserNotFoundException("Пользователь с id - " + userId + " не найден");
         }
         List<Booking> bookings;
         BookingStatus status = transcriptStatus(state);
+        PageRequest pageRequest = Page.createPageRequest(from, size);
 
         switch (status) {
             case ALL:
-                bookings = repository.findByBookerId(userId);
+                bookings = repository.findByBookerIdOrderByStartDesc(userId, pageRequest);
                 break;
             case PAST:
-                bookings = repository.findByBookerIdAndEndBefore(userId, LocalDateTime.now());
+                bookings = repository.findByBookerIdAndEndBeforeOrderByStartDesc(userId, LocalDateTime.now(), pageRequest);
                 break;
             case FUTURE:
-                bookings = repository.findAllByBookerIdAndStartAfter(userId, LocalDateTime.now());
+                bookings = repository.findAllByBookerIdAndStartAfterOrderByStartDesc(userId, LocalDateTime.now(), pageRequest);
                 break;
             case CURRENT:
                 bookings = repository.getBookingCurrentByUserId(userId,
-                        Arrays.asList(BookingStatus.APPROVED, BookingStatus.WAITING, BookingStatus.REJECTED));
+                        Arrays.asList(BookingStatus.APPROVED, BookingStatus.WAITING, BookingStatus.REJECTED), pageRequest);
                 break;
             default:
-                bookings = repository.findByBookerIdAndStatus(userId, status);
+                bookings = repository.findByBookerIdAndStatusOrderByStartDesc(userId, status, pageRequest);
         }
 
         return getCollect(bookings);
     }
 
     @Transactional
-    public List<BookingDto> findAllBookingByOwnerId(int userId, String state) {
+    public List<BookingDto> findAllBookingByOwnerId(int userId, String state , @Min(0) int from, @Min(1) int size ) {
         if (userService.checkUser(userId)) {
             throw new UserNotFoundException("Пользователь с id - " + userId + " не найден");
         }
         List<Booking> bookings;
         BookingStatus status = transcriptStatus(state);
+        PageRequest pageRequest = Page.createPageRequest(from, size);
 
         switch (status) {
             case ALL:
-                bookings = repository.getAllBookingByOwnerId(userId);
+                bookings = repository.getAllBookingByOwnerId(userId, pageRequest);
                 break;
             case PAST:
-                bookings = repository.getPastBookingByOwnerId(userId);
+                bookings = repository.getPastBookingByOwnerId(userId, pageRequest);
                 break;
             case FUTURE:
-                bookings = repository.getFutureBookingByOwnerId(userId);
+                bookings = repository.getFutureBookingByOwnerId(userId, pageRequest);
                 break;
             case CURRENT:
                 bookings = repository.getBookingCurrentByOwnerId(userId,
-                        Arrays.asList(BookingStatus.APPROVED, BookingStatus.WAITING, BookingStatus.REJECTED));
+                        Arrays.asList(BookingStatus.APPROVED, BookingStatus.WAITING, BookingStatus.REJECTED), pageRequest);
                 break;
             default:
-                bookings = repository.getBookingWithStatusByOwnerId(userId, status);
+                bookings = repository.getBookingWithStatusByOwnerId(userId, status, pageRequest);
         }
 
         return getCollect(bookings);
@@ -157,9 +164,8 @@ public class BookingService {
 
         itemService.checkItem(bookingDto.getItemId());
 
-        if (!itemService.checkItemAvailable(ItemDtoMapper.toItem(itemService.getItemById(bookingDto.getItemId(), userId)))) {
-            throw new ItemNotAvailableException(
-                    String.format("Вещь с id - " + bookingDto.getItemId() + " недоступна"));
+        if (!itemService.checkItemAvailable(itemService.getItem(bookingDto.getItemId()))) {
+            throw new ItemNotAvailableException("Вещь с id - " + bookingDto.getItemId() + " недоступна");
         }
 
         if (bookingDto.getStart().isAfter(bookingDto.getEnd())

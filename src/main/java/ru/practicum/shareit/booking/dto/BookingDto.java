@@ -1,5 +1,6 @@
 package ru.practicum.shareit.booking.dto;
 
+import lombok.Builder;
 import lombok.Data;
 import lombok.experimental.Accessors;
 import ru.practicum.shareit.booking.model.BookingStatus;
@@ -17,7 +18,7 @@ public class BookingDto {
     private int id;
 
     @NotNull(message = "Отсутствует ИД вещи в запросе.")
-    private int itemId;
+    private Integer itemId;
 
     @NotNull(message = "Отсутствует начальная точка отсчета.")
     @FutureOrPresent
@@ -27,7 +28,7 @@ public class BookingDto {
     @FutureOrPresent
     private LocalDateTime end;
 
-    private int bookerId;
+    private Integer bookerId;
 
     private UserDto booker;
 

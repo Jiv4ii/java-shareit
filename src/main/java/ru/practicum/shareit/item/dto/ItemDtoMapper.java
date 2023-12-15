@@ -11,7 +11,7 @@ public final class ItemDtoMapper {
     }
 
     public static ItemDto toItemDto(Item item) {
-        return new ItemDto().setId(item.getId()).setName(item.getName()).setDescription(item.getDescription()).setAvailable(item.getAvailable());
+        return new ItemDto().setId(item.getId()).setName(item.getName()).setDescription(item.getDescription()).setAvailable(item.getAvailable()).setRequestId(item.getRequest() != null ? item.getRequest().getId() : null);
     }
 
     public static Item toItem(ItemDto itemDto) {

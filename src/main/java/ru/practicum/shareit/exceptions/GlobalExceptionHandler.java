@@ -95,4 +95,11 @@ public class GlobalExceptionHandler {
         log.info(e.getMessage());
         return Map.of("error", e.getMessage());
     }
+
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public Map<String, String> handleNoCount(final RequestNotFoundException e) {
+        log.info(e.getMessage());
+        return Map.of("error", e.getMessage());
+    }
 }
