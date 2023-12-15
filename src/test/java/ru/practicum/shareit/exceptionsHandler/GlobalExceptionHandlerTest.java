@@ -160,7 +160,7 @@ public class GlobalExceptionHandlerTest {
 
         Map<String, String> response = globalExceptionHandler.handleNoCount(changeAfterApproveException);
 
-        assertEquals("Change after approve", response.get("error"));
+        assertEquals("Change after approve", response.get("error"));;;
     }
 
     @Test
