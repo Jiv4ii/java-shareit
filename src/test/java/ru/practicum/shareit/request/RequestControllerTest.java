@@ -26,7 +26,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 
 @ExtendWith(MockitoExtension.class)
-public class RequestControllerTest {
+class RequestControllerTest {
 
     @Mock
     private RequestService itemRequestService;
@@ -41,7 +41,7 @@ public class RequestControllerTest {
     private RequestDto itemRequestDto;
 
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         mvc = MockMvcBuilders
                 .standaloneSetup(itemRequestController)
                 .build();
@@ -54,7 +54,7 @@ public class RequestControllerTest {
     }
 
     @Test
-    public void createRequestWhenValidDescriptionTest() throws Exception {
+    void createRequestWhenValidDescriptionTest() throws Exception {
         when(itemRequestService.addRequest(any(), anyInt())).thenReturn(itemRequestDto);
 
         mvc.perform(post("/requests")
@@ -68,7 +68,7 @@ public class RequestControllerTest {
     }
 
     @Test
-    public void createRequestWhenNotValidDescriptionTest() throws Exception {
+    void createRequestWhenNotValidDescriptionTest() throws Exception {
         itemRequestDto.setDescription(" ");
 
         mvc.perform(post("/requests")
@@ -81,7 +81,7 @@ public class RequestControllerTest {
     }
 
     @Test
-    public void getAllUsersRequestTest() throws Exception {
+    void getAllUsersRequestTest() throws Exception {
         when(itemRequestService.getAllRequests(anyInt())).thenReturn(Collections.emptyList());
 
         mvc.perform(get("/requests")
@@ -94,7 +94,7 @@ public class RequestControllerTest {
     }
 
     @Test
-    public void getAllOtherUsersRequestTest() throws Exception {
+    void getAllOtherUsersRequestTest() throws Exception {
         when(itemRequestService.getAllOtherUsersRequest(anyInt(), anyInt(), anyInt()))
                 .thenReturn(Collections.emptyList());
 
@@ -108,7 +108,7 @@ public class RequestControllerTest {
     }
 
     @Test
-    public void getRequest() throws Exception {
+    void getRequest() throws Exception {
         when(itemRequestService.getRequestDto(anyInt(), anyInt()))
                 .thenReturn(itemRequestDto);
 

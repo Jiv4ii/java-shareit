@@ -42,7 +42,7 @@ import static org.springframework.test.util.AssertionErrors.assertEquals;
 import static org.springframework.test.util.AssertionErrors.assertTrue;
 
 @ExtendWith(MockitoExtension.class)
-public class ItemServiceTest {
+class ItemServiceTest {
 
     @InjectMocks
     private ItemService itemService;
@@ -65,7 +65,7 @@ public class ItemServiceTest {
 
 
     @Test
-    public void createItemWithoutItemRequestTest() {
+    void createItemWithoutItemRequestTest() {
         int userId = 1;
         Item item = new Item()
                 .setId(1);
@@ -81,7 +81,7 @@ public class ItemServiceTest {
     }
 
     @Test
-    public void searchItemWhenNormalTest() {
+    void searchItemWhenNormalTest() {
         User user = new User().setId(1);
         Item item = new Item()
                 .setId(1)
@@ -98,12 +98,13 @@ public class ItemServiceTest {
 
 
         when(itemStorage.findAll()).thenReturn(Arrays.asList(item));
-        Assertions.assertEquals(itemD, itemService.searchItem("sher").get(0));;
+        Assertions.assertEquals(itemD, itemService.searchItem("sher").get(0));
+        ;
 
     }
 
     @Test
-    public void createItemWithItemRequestTest() {
+    void createItemWithItemRequestTest() {
         int userId = 1;
         Item item = new Item()
                 .setId(1)
@@ -124,7 +125,7 @@ public class ItemServiceTest {
     }
 
     @Test
-    public void updateItemWhenUserOwnerTest() {
+    void updateItemWhenUserOwnerTest() {
         int userId = 1;
         int itemId = 1;
         Item item = new Item()
@@ -146,7 +147,7 @@ public class ItemServiceTest {
     }
 
     @Test
-    public void updateItemWhenUserNotOwnerTest() {
+    void updateItemWhenUserNotOwnerTest() {
         int userId = 2;
         int itemId = 1;
         Item item = new Item()
@@ -165,7 +166,7 @@ public class ItemServiceTest {
     }
 
     @Test
-    public void getItemIdWhenFoundItemTest() {
+    void getItemIdWhenFoundItemTest() {
         int itemId = 1;
         Item item = new Item()
                 .setId(itemId)
@@ -181,17 +182,17 @@ public class ItemServiceTest {
     }
 
     @Test
-    public void getItemIdWhenNotFoundItemTest() {
+    void getItemIdWhenNotFoundItemTest() {
 
         when(itemStorage.findById(anyInt())).thenReturn(Optional.empty());
 
 
-        assertThrows(ItemNotFoundException.class, () -> itemService.getItemById(99,1));
+        assertThrows(ItemNotFoundException.class, () -> itemService.getItemById(99, 1));
     }
 
 
     @Test
-    public void getItemByIdWhenUserOwnerTest() {
+    void getItemByIdWhenUserOwnerTest() {
         int itemId = 1;
         int userId = 1;
 
@@ -216,7 +217,7 @@ public class ItemServiceTest {
 
 
     @Test
-    public void findAllOwnersItemsTest() {
+    void findAllOwnersItemsTest() {
         int userId = 1;
         int from = 1;
         int size = 1;
@@ -229,7 +230,7 @@ public class ItemServiceTest {
     }
 
     @Test
-    public void searchItemWhenTextIsBlankTest() {
+    void searchItemWhenTextIsBlankTest() {
         String text = " ";
 
 
@@ -238,7 +239,7 @@ public class ItemServiceTest {
 
 
     @Test
-    public void addCommentWhenFoundBookingTest() {
+    void addCommentWhenFoundBookingTest() {
         int itemId = 1;
         int userId = 1;
 
@@ -265,7 +266,7 @@ public class ItemServiceTest {
     }
 
     @Test
-    public void addCommentWhenNotFoundBookingTest() {
+    void addCommentWhenNotFoundBookingTest() {
         int itemId = 1;
         int userId = 1;
 

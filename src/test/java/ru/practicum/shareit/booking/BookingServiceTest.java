@@ -35,7 +35,7 @@ import static org.springframework.test.util.AssertionErrors.assertEquals;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-public class BookingServiceTest {
+class BookingServiceTest {
 
     @InjectMocks
     private BookingService bookingService;
@@ -50,7 +50,7 @@ public class BookingServiceTest {
     private UserService userService;
 
     @Test
-    public void createBooking_whenNotValidDateTest() {
+    void createBooking_whenNotValidDateTest() {
         int userId = 1;
         BookingDto bookingDto = new BookingDto()
                 .setItemId(1)
@@ -63,7 +63,7 @@ public class BookingServiceTest {
     }
 
     @Test
-    public void createBooking_whenNotAvailableItemTest() {
+    void createBooking_whenNotAvailableItemTest() {
         int userId = 1;
         BookingDto bookingDto = new BookingDto()
                 .setItemId(1)
@@ -77,7 +77,7 @@ public class BookingServiceTest {
     }
 
     @Test
-    public void createBooking_whenUserOwnerItemTest() {
+    void createBooking_whenUserOwnerItemTest() {
         int userId = 1;
         BookingDto bookingDto = new BookingDto()
                 .setItemId(1)
@@ -97,7 +97,7 @@ public class BookingServiceTest {
 
 
     @Test
-    public void createBookingTest() {
+    void createBookingTest() {
         int userId = 2;
         int itemId = 1;
         UserDto booker = new UserDto().setId(userId);
@@ -126,7 +126,7 @@ public class BookingServiceTest {
     }
 
     @Test
-    public void addStatusBookingWhenNotFoundBookingTest() {
+    void addStatusBookingWhenNotFoundBookingTest() {
         int userId = 1;
         int bookingId = 1;
         boolean isApproved = false;
@@ -147,7 +147,7 @@ public class BookingServiceTest {
 
 
     @Test
-    public void addStatusBooking_whenUserNotOwnerItemTest() {
+    void addStatusBooking_whenUserNotOwnerItemTest() {
         int userId = 1;
         int bookingId = 1;
         boolean isApproved = false;
@@ -168,7 +168,7 @@ public class BookingServiceTest {
     }
 
     @Test
-    public void addStatusBooking_whenNotValidBookingStatus() {
+    void addStatusBooking_whenNotValidBookingStatus() {
         int userId = 1;
         int bookingId = 1;
         boolean isApproved = false;
@@ -193,7 +193,7 @@ public class BookingServiceTest {
     }
 
     @Test
-    public void addStatusBooking_whenBookingStatusIsApproved() {
+    void addStatusBooking_whenBookingStatusIsApproved() {
         int userId = 1;
         int bookingId = 1;
         boolean isApproved = true;
@@ -224,7 +224,7 @@ public class BookingServiceTest {
 
 
     @Test
-    public void getBookingById_whenUserNotBookerOrNotOwnerTest() {
+    void getBookingById_whenUserNotBookerOrNotOwnerTest() {
         int userId = 2;
         int bookingId = 1;
 
@@ -244,7 +244,7 @@ public class BookingServiceTest {
     }
 
     @Test
-    public void getBookingById_whenUserBookerTest() {
+    void getBookingById_whenUserBookerTest() {
         int userId = 2;
         int bookingId = 1;
 
@@ -268,7 +268,7 @@ public class BookingServiceTest {
     }
 
     @Test
-    public void findAllBookingByUserId_whenNotValidStatusTest() {
+    void findAllBookingByUserId_whenNotValidStatusTest() {
         int userId = 1;
         int from = 1;
         int size = 1;
@@ -279,7 +279,7 @@ public class BookingServiceTest {
     }
 
     @Test
-    public void findAllBookingByUserId_whenStatusAllTest() {
+    void findAllBookingByUserId_whenStatusAllTest() {
         int userId = 1;
         int from = 1;
         int size = 1;
@@ -295,7 +295,7 @@ public class BookingServiceTest {
     }
 
     @Test
-    public void findAllBookingByUserId_whenStatusPastTest() {
+    void findAllBookingByUserId_whenStatusPastTest() {
         int userId = 1;
         int from = 1;
         int size = 1;
@@ -320,7 +320,7 @@ public class BookingServiceTest {
     }
 
     @Test
-    public void findAllBookingByUserId_whenStatusCurrentTest() {
+    void findAllBookingByUserId_whenStatusCurrentTest() {
         int userId = 1;
         int from = 1;
         int size = 1;
@@ -346,7 +346,7 @@ public class BookingServiceTest {
     }
 
     @Test
-    public void findAllBookingByUserId_whenStatusFutureTest() {
+    void findAllBookingByUserId_whenStatusFutureTest() {
         int userId = 1;
         int from = 1;
         int size = 1;
@@ -372,7 +372,7 @@ public class BookingServiceTest {
     }
 
     @Test
-    public void findAllBookingByUserId_whenStatusDefaultTest() {
+    void findAllBookingByUserId_whenStatusDefaultTest() {
         int userId = 1;
         int from = 1;
         int size = 1;
@@ -400,7 +400,7 @@ public class BookingServiceTest {
 
 
     @Test
-    public void findAllBookingByOwnerId_whenStatusAllTest() {
+    void findAllBookingByOwnerId_whenStatusAllTest() {
         int userId = 1;
         int from = 1;
         int size = 1;
@@ -417,7 +417,7 @@ public class BookingServiceTest {
     }
 
     @Test
-    public void findAllBookingByOwnerId_whenStatusPastTest() {
+    void findAllBookingByOwnerId_whenStatusPastTest() {
         int userId = 1;
         int from = 1;
         int size = 1;
@@ -443,7 +443,7 @@ public class BookingServiceTest {
     }
 
     @Test
-    public void findAllBookingByOwnerId_whenStatusFutureTest() {
+    void findAllBookingByOwnerId_whenStatusFutureTest() {
         int userId = 1;
         int from = 1;
         int size = 1;
@@ -469,7 +469,7 @@ public class BookingServiceTest {
     }
 
     @Test
-    public void findAllBookingByOwnerId_whenStatusCurrentTest() {
+    void findAllBookingByOwnerId_whenStatusCurrentTest() {
         int userId = 1;
         int from = 1;
         int size = 1;
@@ -494,7 +494,7 @@ public class BookingServiceTest {
     }
 
     @Test
-    public void findAllBookingByOwnerId_whenStatusDefautTest() {
+    void findAllBookingByOwnerId_whenStatusDefautTest() {
         int userId = 1;
         int from = 1;
         int size = 1;

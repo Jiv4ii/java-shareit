@@ -4,7 +4,10 @@ import ru.practicum.shareit.request.model.Request;
 
 import java.util.Collections;
 
-public class RequestDtoMapper {
+public final class RequestDtoMapper {
+    private RequestDtoMapper() {
+    }
+
     public static Request toItemRequest(RequestDto itemRequestDto) {
         return Request.builder()
                 .description(itemRequestDto.getDescription())

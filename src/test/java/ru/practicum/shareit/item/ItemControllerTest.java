@@ -27,7 +27,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @ExtendWith(MockitoExtension.class)
-public class ItemControllerTest {
+class ItemControllerTest {
 
     @Mock
     private ItemService itemService;
@@ -42,7 +42,7 @@ public class ItemControllerTest {
     private ItemDto item;
 
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         mvc = MockMvcBuilders
                 .standaloneSetup(itemController)
                 .build();
@@ -54,7 +54,7 @@ public class ItemControllerTest {
     }
 
     @Test
-    public void createItemWhenValidNameTest() throws Exception {
+    void createItemWhenValidNameTest() throws Exception {
         when(itemService.createItem(any(), anyInt())).thenReturn(item);
 
         mvc.perform(post("/items")
@@ -68,7 +68,7 @@ public class ItemControllerTest {
     }
 
     @Test
-    public void createItemWhenNotValidNameTest() throws Exception {
+    void createItemWhenNotValidNameTest() throws Exception {
         item.setName(" ");
 
         mvc.perform(post("/items")
@@ -81,7 +81,7 @@ public class ItemControllerTest {
     }
 
     @Test
-    public void updateItemTest() throws Exception {
+    void updateItemTest() throws Exception {
         item.setName("Плоская отвертка");
         when(itemService.updateItem(any(), anyInt(), anyInt())).thenReturn(item);
 
@@ -97,7 +97,7 @@ public class ItemControllerTest {
     }
 
     @Test
-    public void getItemByIdTest() throws Exception {
+    void getItemByIdTest() throws Exception {
         when(itemService.getItemById(anyInt(), anyInt())).thenReturn(item);
 
         mvc.perform(get("/items/1")
@@ -110,7 +110,7 @@ public class ItemControllerTest {
     }
 
     @Test
-    public void getAllItemOwnerTest() throws Exception {
+    void getAllItemOwnerTest() throws Exception {
         when(itemService.findAllUsersItems(anyInt(), anyInt(), anyInt()))
                 .thenReturn(Collections.emptyList());
 
@@ -124,7 +124,7 @@ public class ItemControllerTest {
     }
 
     @Test
-    public void searchItemTest() throws Exception {
+    void searchItemTest() throws Exception {
         when(itemService.searchItem(anyString()))
                 .thenReturn(Collections.emptyList());
 
@@ -138,7 +138,7 @@ public class ItemControllerTest {
     }
 
     @Test
-    public void addCommentWhenValidTextTest() throws Exception {
+    void addCommentWhenValidTextTest() throws Exception {
         CommentDto comment = new CommentDto().setId(1)
                 .setText("Рекомендую");
         when(itemService.addComment(any(), anyInt(), anyInt()))
@@ -155,7 +155,7 @@ public class ItemControllerTest {
     }
 
     @Test
-    public void addCommentWhenNotValidTextTest() throws Exception {
+    void addCommentWhenNotValidTextTest() throws Exception {
         CommentDto comment = new CommentDto().setId(1)
                 .setText(" ");
 

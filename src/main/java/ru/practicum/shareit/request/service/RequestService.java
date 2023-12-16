@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.shareit.exceptions.RequestNotFoundException;
 import ru.practicum.shareit.exceptions.UserNotFoundException;
 import ru.practicum.shareit.item.dto.ItemDtoMapper;
@@ -16,11 +17,11 @@ import ru.practicum.shareit.request.utils.Page;
 import ru.practicum.shareit.user.dto.UserDtoMapper;
 import ru.practicum.shareit.user.service.UserService;
 
-import javax.transaction.Transactional;
 import javax.validation.constraints.Min;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
+
 
 @Service
 @RequiredArgsConstructor
@@ -42,7 +43,7 @@ public class RequestService {
         return RequestDtoMapper.toItemRequestDto(itemRequestStorage.save(itemRequest));
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     public List<RequestDto> getAllRequests(int userId) {
         if (userService.checkUser(userId)) {
             throw new UserNotFoundException("Пользователь с id - " + userId + ", не найден");
@@ -51,7 +52,7 @@ public class RequestService {
         return getListRequestDto(itemRequestStorage.findAllByRequestorId(userId));
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     public List<RequestDto> getAllOtherUsersRequest(int userId, @Min(0) int from, @Min(1) int size) {
         if (userService.checkUser(userId)) {
             throw new UserNotFoundException("Пользователь с id - " + userId + ", не найден");
@@ -76,7 +77,7 @@ public class RequestService {
         return listItemRequestDto;
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     public RequestDto getRequestDto(int requestId, int userId) {
         checkExistsRequest(requestId);
         if (userService.checkUser(userId)) {
@@ -90,12 +91,14 @@ public class RequestService {
         return itemRequestDto;
     }
 
+    @Transactional(readOnly = true)
     public void checkExistsRequest(int requestId) {
         if (itemRequestStorage.findById(requestId).isEmpty()) {
             throw new RequestNotFoundException("Запроса с id " + requestId + " не существует");
         }
     }
 
+    @Transactional(readOnly = true)
     public Request getRequest(int requestId) {
         return itemRequestStorage.getReferenceById(requestId);
     }

@@ -26,7 +26,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 
 @ExtendWith(MockitoExtension.class)
-public class UserControllerTest {
+class UserControllerTest {
 
     @Mock
     private UserService userService;
@@ -41,7 +41,7 @@ public class UserControllerTest {
     private UserDto userDto;
 
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         mvc = MockMvcBuilders
                 .standaloneSetup(userController)
                 .build();
@@ -53,7 +53,7 @@ public class UserControllerTest {
     }
 
     @Test
-    public void createUserTest() throws Exception {
+    void createUserTest() throws Exception {
         when(userService.createUser(any())).thenReturn(userDto);
 
         mvc.perform(post("/users")
@@ -65,7 +65,7 @@ public class UserControllerTest {
     }
 
     @Test
-    public void createUserWhenNameIsBlankTest() throws Exception {
+    void createUserWhenNameIsBlankTest() throws Exception {
         userDto.setName(" ");
 
         mvc.perform(post("/users")
@@ -77,7 +77,7 @@ public class UserControllerTest {
     }
 
     @Test
-    public void getUserByIdTest() throws Exception {
+    void getUserByIdTest() throws Exception {
         when(userService.getUserById(1)).thenReturn(userDto);
 
         mvc.perform(get("/users/1")
@@ -89,7 +89,7 @@ public class UserControllerTest {
     }
 
     @Test
-    public void getAllUsers() throws Exception {
+    void getAllUsers() throws Exception {
         when(userService.getAllUsers()).thenReturn(Collections.emptyList());
 
         mvc.perform(get("/users")
@@ -101,7 +101,7 @@ public class UserControllerTest {
     }
 
     @Test
-    public void updateUserTest() throws Exception {
+    void updateUserTest() throws Exception {
         userDto.setName("NIKITA");
 
         when(userService.updateUser(any(), anyInt())).thenReturn(userDto);
@@ -116,7 +116,7 @@ public class UserControllerTest {
     }
 
     @Test
-    public void deleteUserTest() throws Exception {
+    void deleteUserTest() throws Exception {
         mvc.perform(delete("/users/1")
                         .characterEncoding(StandardCharsets.UTF_8)
                         .contentType(MediaType.APPLICATION_JSON)

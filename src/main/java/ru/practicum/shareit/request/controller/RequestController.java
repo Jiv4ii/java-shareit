@@ -9,6 +9,8 @@ import ru.practicum.shareit.request.service.RequestService;
 import javax.validation.Valid;
 import java.util.List;
 
+import static ru.practicum.shareit.constants.Constants.USER_HEADER_ID;
+
 
 @RestController
 @RequestMapping(path = "/requests")
@@ -16,24 +18,24 @@ import java.util.List;
 @Slf4j
 public class RequestController {
     private final RequestService itemRequestService;
-    private final String userHeaderId = "X-Sharer-User-Id";
+
 
     @PostMapping
     public RequestDto addRequest(@Valid @RequestBody RequestDto itemRequestDto,
-                                 @RequestHeader(userHeaderId) int userId) {
+                                 @RequestHeader(USER_HEADER_ID) int userId) {
         log.info("Запрос на создание запроса вещи");
         return itemRequestService.addRequest(itemRequestDto, userId);
     }
 
     @GetMapping
-    public List<RequestDto> getAllUsersItemRequest(@RequestHeader(userHeaderId) int userId) {
+    public List<RequestDto> getAllUsersItemRequest(@RequestHeader(USER_HEADER_ID) int userId) {
         log.info("Запрос на возврат списка запросов юзера: " + userId);
         return itemRequestService.getAllRequests(userId);
     }
 
     @GetMapping("/all")
     public List<RequestDto> getAllOtherUsersItemRequest(
-            @RequestHeader(userHeaderId) int userId,
+            @RequestHeader(USER_HEADER_ID) int userId,
             @RequestParam(defaultValue = "0") int from,
             @RequestParam(defaultValue = "10") int size) {
         log.info(String.format("Запрос от юзера id = %d, " +
@@ -42,7 +44,7 @@ public class RequestController {
     }
 
     @GetMapping("{requestId}")
-    public RequestDto getItemRequest(@PathVariable int requestId, @RequestHeader(userHeaderId) int userId) {
+    public RequestDto getItemRequest(@PathVariable int requestId, @RequestHeader(USER_HEADER_ID) int userId) {
         log.info("Запрос на возврат запроса с id = " + requestId);
         return itemRequestService.getRequestDto(requestId, userId);
     }

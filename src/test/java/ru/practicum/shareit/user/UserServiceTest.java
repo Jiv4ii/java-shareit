@@ -21,7 +21,7 @@ import static org.mockito.Mockito.*;
 import static org.springframework.test.util.AssertionErrors.assertEquals;
 
 @ExtendWith(MockitoExtension.class)
-public class UserServiceTest {
+class UserServiceTest {
 
     @InjectMocks
     private UserService userService;
@@ -30,7 +30,7 @@ public class UserServiceTest {
     private UserRepository userStorage;
 
     @Test
-    public void createUserTest() {
+    void createUserTest() {
         User user = new User()
                 .setName("Дмитрий");
         when(userStorage.save(user)).thenReturn(user);
@@ -42,7 +42,7 @@ public class UserServiceTest {
 
 
     @Test
-    public void getUserByIdTest() {
+    void getUserByIdTest() {
         int userId = 0;
         UserDto userExpected = new UserDto();
         when(userStorage.findById(userId)).thenReturn(Optional.of(new User()));
@@ -54,7 +54,7 @@ public class UserServiceTest {
     }
 
     @Test
-    public void getUserByIdWhenUserNotFound() {
+    void getUserByIdWhenUserNotFound() {
         int userId = 99;
         when(userStorage.findById(userId)).thenReturn(Optional.empty());
 
@@ -62,7 +62,7 @@ public class UserServiceTest {
     }
 
     @Test
-    public void getAllUsersTest() {
+    void getAllUsersTest() {
         List<User> expectedUsers = List.of(new User());
         when(userStorage.findAll()).thenReturn(expectedUsers);
 
@@ -74,14 +74,14 @@ public class UserServiceTest {
     }
 
     @Test
-    public void deleteUserTest() {
+    void deleteUserTest() {
         int userId = 1;
         userService.deleteUser(1);
         verify(userStorage, times(1)).deleteById(userId);
     }
 
     @Test
-    public void updateUserTest() {
+    void updateUserTest() {
         int userId = 1;
         User userExpected = new User()
                 .setId(userId)
