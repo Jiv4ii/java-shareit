@@ -1,5 +1,6 @@
 package ru.practicum.shareit.item.dto;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 import lombok.experimental.Accessors;
 import ru.practicum.shareit.booking.dto.BookingDto;
@@ -26,5 +27,8 @@ public class ItemDto {
     private BookingDto lastBooking;
     private BookingDto nextBooking;
     private List<CommentDto> comments;
+
+    @JsonProperty("requestId")
+    private Integer requestId;
 
 }

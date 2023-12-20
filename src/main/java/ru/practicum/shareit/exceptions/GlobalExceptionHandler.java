@@ -47,12 +47,6 @@ public class GlobalExceptionHandler {
         return Map.of("error", e.getMessage());
     }
 
-    @ExceptionHandler
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public Map<String, String> handleNoCount(final NoAccessBookingException e) {
-        log.info(e.getMessage());
-        return Map.of("error", e.getMessage());
-    }
 
     @ExceptionHandler
     @ResponseStatus(HttpStatus.BAD_REQUEST)
@@ -92,6 +86,13 @@ public class GlobalExceptionHandler {
     @ExceptionHandler
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public Map<String, String> handleNoCount(final CantCommentException e) {
+        log.info(e.getMessage());
+        return Map.of("error", e.getMessage());
+    }
+
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public Map<String, String> handleNoCount(final RequestNotFoundException e) {
         log.info(e.getMessage());
         return Map.of("error", e.getMessage());
     }

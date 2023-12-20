@@ -18,7 +18,8 @@ public final class BookingDtoMapper {
                 .setItem(ItemDtoMapper.toItemDto(booking.getItem()))
                 .setBooker(UserDtoMapper.userToDto(booking.getBooker()))
                 .setStatus(booking.getStatus())
-                .setBookerId(booking.getBooker().getId());
+                .setBookerId(booking.getBooker().getId())
+                .setItemId(booking.getItem().getId());
     }
 
     public static Booking toBooking(BookingDto itemDto) {
@@ -29,15 +30,6 @@ public final class BookingDtoMapper {
                 .setBooker(UserDtoMapper.dtoToUser(itemDto.getBooker()))
                 .setItem(ItemDtoMapper.toItem(itemDto.getItem()))
                 .setStatus(itemDto.getStatus());
-    }
-
-    public static BookingDto toPastBookingDto(Booking booking) {
-        return new BookingDto()
-                .setId(booking.getId())
-                .setItem(ItemDtoMapper.toItemDto(booking.getItem()))
-                .setBooker(UserDtoMapper.userToDto(booking.getBooker()))
-                .setStatus(booking.getStatus())
-                .setBookerId(booking.getBooker().getId());
     }
 
 

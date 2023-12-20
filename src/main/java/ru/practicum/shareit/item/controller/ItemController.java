@@ -11,23 +11,24 @@ import ru.practicum.shareit.item.dto.ItemDto;
 import javax.validation.Valid;
 import java.util.List;
 
+import static ru.practicum.shareit.constants.Constants.USER_HEADER_ID;
+
 @RestController
 @RequestMapping("/items")
 @RequiredArgsConstructor
 @Slf4j
 public class ItemController {
     private final ItemService itemService;
-    public static final String USER_HEADER = "X-Sharer-User-Id";
 
     @PostMapping
-    public ItemDto createItem(@RequestHeader(USER_HEADER) int userId,
+    public ItemDto createItem(@RequestHeader(USER_HEADER_ID) int userId,
                               @Valid @RequestBody ItemDto itemDto) {
         log.info("Запрос создания вещи юзера id = " + userId);
         return itemService.createItem(itemDto, userId);
     }
 
     @PatchMapping("/{itemId}")
-    public ItemDto updateItem(@RequestHeader(USER_HEADER) int userId,
+    public ItemDto updateItem(@RequestHeader(USER_HEADER_ID) int userId,
                               @PathVariable int itemId,
                               @RequestBody ItemDto itemDto) {
         log.info("Обновление вещи пользователя id = " + userId);
@@ -35,15 +36,16 @@ public class ItemController {
     }
 
     @GetMapping("/{itemId}")
-    public ItemDto getItemById(@PathVariable int itemId, @RequestHeader(USER_HEADER) int userId) {
+    public ItemDto getItemById(@PathVariable int itemId, @RequestHeader(USER_HEADER_ID) int userId) {
         log.info("Запрос вещи id = " + itemId);
         return itemService.getItemById(itemId, userId);
     }
 
     @GetMapping
-    public List<OwnerItem> getAllItemUser(@RequestHeader(USER_HEADER) int userId) {
+    public List<OwnerItem> getAllItemUser(@RequestHeader(USER_HEADER_ID) int userId, @RequestParam(defaultValue = "0") int from,
+                                          @RequestParam(defaultValue = "10") int size) {
         log.info("Запрос всех вещей юзера id = " + userId);
-        return itemService.findAllUsersItems(userId);
+        return itemService.findAllUsersItems(userId, from, size);
     }
 
     @GetMapping("/search")
@@ -53,7 +55,7 @@ public class ItemController {
     }
 
     @PostMapping("/{itemId}/comment")
-    public CommentDto addComment(@RequestHeader(USER_HEADER) int userId,
+    public CommentDto addComment(@RequestHeader(USER_HEADER_ID) int userId,
                                  @PathVariable int itemId,
                                  @RequestBody @Valid CommentDto commentDto) {
         return itemService.addComment(commentDto, itemId, userId);

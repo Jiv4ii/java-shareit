@@ -17,7 +17,7 @@ public class BookingDto {
     private int id;
 
     @NotNull(message = "Отсутствует ИД вещи в запросе.")
-    private int itemId;
+    private Integer itemId;
 
     @NotNull(message = "Отсутствует начальная точка отсчета.")
     @FutureOrPresent
@@ -27,7 +27,7 @@ public class BookingDto {
     @FutureOrPresent
     private LocalDateTime end;
 
-    private int bookerId;
+    private Integer bookerId;
 
     private UserDto booker;
 
