@@ -105,10 +105,7 @@ public class BookingService {
                 bookings = repository.findByBookerIdAndStatusOrderByStartDesc(userId, status, pageRequest);
         }
 
-        return bookings
-                .stream()
-                .map(BookingDtoMapper::toBookingDto)
-                .collect(Collectors.toList());
+        return getCollect(bookings);
     }
 
     @Transactional
@@ -138,10 +135,7 @@ public class BookingService {
                 bookings = repository.getBookingWithStatusByOwnerId(userId, status, pageRequest);
         }
 
-        return bookings
-                .stream()
-                .map(BookingDtoMapper::toBookingDto)
-                .collect(Collectors.toList());
+        return getCollect(bookings);
     }
 
     private static List<BookingDto> getCollect(List<Booking> bookings) {

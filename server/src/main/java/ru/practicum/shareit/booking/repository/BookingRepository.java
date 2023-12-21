@@ -24,32 +24,31 @@ public interface BookingRepository extends JpaRepository<Booking, Integer> {
     @Query("select b from Booking b " +
             "where b.booker.id = ?1 " +
             "and b.status in ?2 " +
-            "and current_timestamp between b.start and b.end " +
-            "order by b.start asc ")
+            "and current_timestamp between b.start and b.end ")
     List<Booking> getBookingCurrentByUserId(
             int userId, List<BookingStatus> status, PageRequest pageable);
 
     @Query("select b from Booking b " +
             "where b.item.owner.id = ?1 " +
-            "order by b.start desc ")
+            "order by b.start desc")
     List<Booking> getAllBookingByOwnerId(int userId, PageRequest pageable);
 
     @Query("select b from Booking b " +
             "where b.item.owner.id = ?1 " +
             "and b.end < current_timestamp " +
-            "order by b.start desc ")
+            "order by b.start")
     List<Booking> getPastBookingByOwnerId(int userId, PageRequest pageable);
 
     @Query("select b from Booking b " +
             "where b.item.owner.id = ?1 " +
             "and b.start > current_timestamp " +
-            "order by b.start desc ")
+            "order by b.start")
     List<Booking> getFutureBookingByOwnerId(int userId, PageRequest pageable);
 
     @Query("select b from Booking b " +
             "where b.item.owner.id = ?1 " +
             "and b.status = ?2 " +
-            "order by b.start desc ")
+            "order by b.start")
     List<Booking> getBookingWithStatusByOwnerId(int userId, BookingStatus state, PageRequest pageable);
 
 
@@ -57,7 +56,7 @@ public interface BookingRepository extends JpaRepository<Booking, Integer> {
             "where b.item.owner.id = ?1 " +
             "and b.status in ?2 " +
             "and current_timestamp between b.start and b.end " +
-            " order by b.start asc ")
+            " order by b.start")
     List<Booking> getBookingCurrentByOwnerId(
             int userId, List<BookingStatus> status, PageRequest pageable);
 
@@ -65,14 +64,14 @@ public interface BookingRepository extends JpaRepository<Booking, Integer> {
             "where b.item.id = ?1 " +
             "and  b.end < current_timestamp " +
             "and b.status = ?2 " +
-            "order by b.end asc ")
+            "order by b.end desc ")
     List<Booking> getLastBookingForItem(int itemId, BookingStatus approved);
 
     @Query("select b from Booking b " +
             "where b.item.id = ?1 " +
             "and b.status = ?2 " +
             "and  b.start > current_timestamp " +
-            "order by b.end asc ")
+            "order by b.end ASC ")
     List<Booking> getNextBookingForItem(int itemId, BookingStatus approved);
 
     @Query("select b from Booking b " +
