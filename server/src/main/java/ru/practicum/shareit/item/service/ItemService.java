@@ -145,13 +145,13 @@ public class ItemService {
                     .collect(Collectors.toList());
             ownerItems.add(OwnerItemMapper.toOwnerItem(item, lastBooking, nextBooking, comments));
         }
-                Comparator<OwnerItem> comparator = (item1, item2) -> {
+        Comparator<OwnerItem> comparator = (item1, item2) -> {
             LocalDateTime dateTime1 = null;
             LocalDateTime dateTime2 = null;
-            if(item1.getNextBooking() != null) {
+            if (item1.getNextBooking() != null) {
                 dateTime1 = item1.getNextBooking().getStart();
             }
-            if(item2.getNextBooking() != null) {
+            if (item2.getNextBooking() != null) {
                 dateTime2 = item2.getNextBooking().getStart();
             }
 
