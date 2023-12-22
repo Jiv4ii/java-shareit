@@ -9,6 +9,7 @@ import org.springframework.web.util.DefaultUriBuilderFactory;
 import ru.practicum.shareit.client.BaseClient;
 
 import javax.validation.constraints.Min;
+import javax.validation.constraints.PositiveOrZero;
 import java.util.Collections;
 import java.util.Map;
 import java.util.Optional;
@@ -26,21 +27,21 @@ public class ItemClient extends BaseClient {
         );
     }
 
-    public ResponseEntity<Object> createItem(ItemDto itemDto, int userId) {
+    public ResponseEntity<Object> createItem(ItemDto itemDto,  int userId) {
         return post("/", userId, null, itemDto);
     }
 
-    public ResponseEntity<Object> updateItem(ItemDto itemDto, int itemId, int userId) {
+    public ResponseEntity<Object> updateItem(ItemDto itemDto,  int itemId,  int userId) {
         String path = String.format("/%d", itemId);
         return patch(path, userId, null, itemDto);
     }
 
-    public ResponseEntity<Object> getItemById(int itemId, int userId) {
+    public ResponseEntity<Object> getItemById( int itemId,  int userId) {
         String path = String.format("/%d", itemId);
         return get(path, userId);
     }
 
-    public ResponseEntity<Object> getAllItemOwner(int userId, @Min(0) int from, @Min(1) int size) {
+    public ResponseEntity<Object> getAllItemOwner( int userId,  int from, int size) {
         Map<String, Object> parameters = Map.of(
                 "from", from,
                 "size", size
@@ -48,7 +49,7 @@ public class ItemClient extends BaseClient {
         return get("?from={from}&size={size}", userId, parameters);
     }
 
-    public ResponseEntity<Object> searchItem(String text, @Min(1) int from, @Min(0) int size, int userId) {
+    public ResponseEntity<Object> searchItem(String text,  int from,  int size,  int userId) {
 
         if (text.isBlank()) {
             return ResponseEntity.of(Optional.of(Collections.emptyList()));
@@ -62,7 +63,7 @@ public class ItemClient extends BaseClient {
         return get("/search?text={text}&from={from}&size={size}", userId, parameters);
     }
 
-    public ResponseEntity<Object> addComment(CommentDto commentDto, int userId, int itemId) {
+    public ResponseEntity<Object> addComment(CommentDto commentDto,  int userId,  int itemId) {
         String path = String.format("/%d/comment", itemId);
         return post(path, userId, null, commentDto);
     }

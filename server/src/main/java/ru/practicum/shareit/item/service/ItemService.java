@@ -157,11 +157,13 @@ public class ItemService {
 
 
             if (dateTime1 == null && dateTime2 == null) {
-                return 0; // Оба объекта не имеют бронирований, порядок не важен
-            } else if (dateTime1 == null) {
-                return 1; // Первый объект не имеет бронирований, второй - да, второй идет первым
-            } else if (dateTime2 == null) {
-                return -1; // Второй объект не имеет бронирований, первый - да, первый идет первым
+                return 0;
+            }
+            if (dateTime1 == null) {
+                return 1;
+            }
+            if (dateTime2 == null) {
+                return -1;
             }
 
             return dateTime1.compareTo(dateTime2);

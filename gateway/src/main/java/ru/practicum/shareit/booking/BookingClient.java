@@ -11,6 +11,8 @@ import ru.practicum.shareit.client.BaseClient;
 import ru.practicum.shareit.exceptions.CheckStartAndEndBookingException;
 
 import javax.validation.constraints.Min;
+import javax.validation.constraints.Positive;
+import javax.validation.constraints.PositiveOrZero;
 import java.util.Map;
 
 @Service
@@ -27,7 +29,7 @@ public class BookingClient extends BaseClient {
         );
     }
 
-    public ResponseEntity<Object> addStatusBooking(int userId, boolean approved, int bookingId) {
+    public ResponseEntity<Object> addStatusBooking( int userId, boolean approved,  int bookingId) {
         Map<String, Object> parameters = Map.of(
                 "approved", approved
         );
@@ -35,7 +37,7 @@ public class BookingClient extends BaseClient {
         return patch(path, userId, parameters);
     }
 
-    public ResponseEntity<Object> getBookings(int userId, BookingStatus state, Integer from, Integer size) {
+    public ResponseEntity<Object> getBookings( int userId, BookingStatus state,  Integer from,  Integer size) {
         Map<String, Object> parameters = Map.of(
                 "state", state.name(),
                 "from", from,
@@ -44,12 +46,12 @@ public class BookingClient extends BaseClient {
         return get("?state={state}&from={from}&size={size}", userId, parameters);
     }
 
-    public ResponseEntity<Object> getBooking(int userId, int bookingId) {
+    public ResponseEntity<Object> getBooking( int userId,  int bookingId) {
         String path = String.format("/%d", bookingId);
         return get(path, userId);
     }
 
-    public ResponseEntity<Object> createBooking(BookingDto bookingDto, int userId) {
+    public ResponseEntity<Object> createBooking(BookingDto bookingDto,  int userId) {
 
         if (bookingDto.getStart().isAfter(bookingDto.getEnd())
                 || bookingDto.getStart().equals(bookingDto.getEnd())) {
@@ -59,10 +61,10 @@ public class BookingClient extends BaseClient {
         return post("/", userId, null, bookingDto);
     }
 
-    public ResponseEntity<Object> findAllBookingByUserId(int userId,
+    public ResponseEntity<Object> findAllBookingByUserId( int userId,
                                                          BookingStatus state,
-                                                         @Min(0) int from,
-                                                         @Min(1) int size) {
+                                                          int from,
+                                                          int size) {
         Map<String, Object> parameters = Map.of(
                 "state", state,
                 "from", from,
@@ -71,10 +73,10 @@ public class BookingClient extends BaseClient {
         return get("/?state={state}&from={from}&size={size}", userId, parameters);
     }
 
-    public ResponseEntity<Object> findAllBookingByOwnerId(int userId,
+    public ResponseEntity<Object> findAllBookingByOwnerId( int userId,
                                                           BookingStatus state,
-                                                          @Min(0) int from,
-                                                          @Min(1) int size) {
+                                                           int from,
+                                                           int size) {
         Map<String, Object> parameters = Map.of(
                 "state", state,
                 "from", from,
