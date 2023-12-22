@@ -9,8 +9,6 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.util.DefaultUriBuilderFactory;
 import ru.practicum.shareit.client.BaseClient;
 
-import javax.validation.constraints.Min;
-import javax.validation.constraints.Positive;
 import java.util.Map;
 
 @Service
@@ -27,7 +25,7 @@ public class RequestClient extends BaseClient {
         );
     }
 
-    public ResponseEntity<Object> addRequest(RequestDto itemRequestDto,  int userId) {
+    public ResponseEntity<Object> addRequest(RequestDto itemRequestDto, int userId) {
         return post("/", userId, null, itemRequestDto);
     }
 
@@ -35,7 +33,7 @@ public class RequestClient extends BaseClient {
         return get("/", userId);
     }
 
-    public ResponseEntity<Object> getAllOtherUsersItemRequest(int userId,  int from,  int size) {
+    public ResponseEntity<Object> getAllOtherUsersItemRequest(int userId, int from, int size) {
         Map<String, Object> parameters = Map.of(
                 "from", from,
                 "size", size
