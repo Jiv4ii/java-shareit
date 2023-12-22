@@ -29,6 +29,8 @@ import javax.transaction.Transactional;
 import javax.validation.constraints.Min;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -144,7 +146,28 @@ public class ItemService {
                     .collect(Collectors.toList());
             ownerItems.add(OwnerItemMapper.toOwnerItem(item, lastBooking, nextBooking, comments));
         }
+                Comparator<OwnerItem> comparator = (item1, item2) -> {
+            LocalDateTime dateTime1 = null;
+            LocalDateTime dateTime2 = null;
+            if(item1.getNextBooking() != null) {
+                dateTime1 = item1.getNextBooking().getStart();
+            }
+            if(item2.getNextBooking() != null) {
+                dateTime2 = item2.getNextBooking().getStart();
+            }
 
+
+            if (dateTime1 == null && dateTime2 == null) {
+                return 0; // Оба объекта не имеют бронирований, порядок не важен
+            } else if (dateTime1 == null) {
+                return 1; // Первый объект не имеет бронирований, второй - да, второй идет первым
+            } else if (dateTime2 == null) {
+                return -1; // Второй объект не имеет бронирований, первый - да, первый идет первым
+            }
+
+            return dateTime1.compareTo(dateTime2);
+        };
+        ownerItems.sort(comparator);
         return ownerItems;
     }
 
